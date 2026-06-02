@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> | Nội Thất Đẹp</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="/"> Nội Thất Đẹp</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navMenu">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item"><a class="nav-link" href="/">Trang chủ</a></li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Sản phẩm</a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/products/category/sofa">Sofa</a></li>
+                <li><a class="dropdown-item" href="/products/category/ban">Bàn</a></li>
+                <li><a class="dropdown-item" href="/products/category/ghe">Ghế</a></li>
+                <li><a class="dropdown-item" href="/products/category/giuong">Giường</a></li>
+                <li><a class="dropdown-item" href="/products/category/tu">Tủ</a></li>
+              </ul>
+            </li>
+          </ul>
+
+          <!-- Search -->
+          <form class="d-flex me-3" action="/products/search" method="GET">
+            <input class="form-control me-2" type="search" name="q" placeholder="Tìm kiếm..." />
+            <button class="btn btn-outline-light" type="submit">
+              <i class="fas fa-search"></i>
+            </button>
+          </form>
+
+          <!-- User Menu -->
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="/cart">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="badge bg-danger"><%= cartCount %></span>
+              </a>
+            </li>
+
+            <% if (currentUser) { %>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                <% if (isAdmin) { %> 
+                <% } else if (isStaff) { %> 
+                <% } else { %>  <% } %>
+                <%= currentUser.name %>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <% if (isAdmin) { %>
+                <li><h6 class="dropdown-header text-danger">ADMIN</h6></li>
+                <li><a class="dropdown-item" href="/admin/dashboard"> Dashboard</a></li>
+                <li><a class="dropdown-item" href="/admin/products"> Sản phẩm</a></li>
+                <li><a class="dropdown-item" href="/admin/orders"> Đơn hàng</a></li>
+                <li><a class="dropdown-item" href="/admin/users"> Người dùng</a></li>
+                <li><hr class="dropdown-divider" /></li>
+
+                <% } else if (isStaff) { %>
+                <li><h6 class="dropdown-header text-warning">NHÂN VIÊN</h6></li>
+                <li><a class="dropdown-item" href="/staff/dashboard"> Dashboard</a></li>
+                <li><a class="dropdown-item" href="/chat/staff"> Chat</a></li>
+                <li><a class="dropdown-item" href="/staff/orders"> Đơn hàng</a></li>
+                <li><hr class="dropdown-divider" /></li>
+
+                <% } else { %>
+                <li><a class="dropdown-item" href="/profile"> Hồ sơ</a></li>
+                <li><a class="dropdown-item" href="/orders/my-orders"> Đơn hàng</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <% } %>
+
+                <li>
+                  <form action="/logout" method="POST">
+                    <button class="dropdown-item text-danger" type="submit"> Đăng xuất</button>
+                  </form>
+                </li>
+              </ul>
+            </li>
+
+            <% } else { %>
+            <li class="nav-item"><a class="nav-link" href="/login">Đăng nhập</a></li>
+            <li class="nav-item"><a class="nav-link" href="/register">Đăng ký</a></li>
+            <% } %>
+          </ul>
+
+        </div><!-- ← đóng navbar-collapse -->
+      </div><!-- ← đóng container -->
+    </nav><!-- ← đóng nav -->
+
+    <!-- Flash Messages -->
+    <div class="container mt-3">
+      <% if (successMsg && successMsg.length > 0) { %>
+      <div class="alert alert-success alert-dismissible fade show">
+        <%= successMsg[0] %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+      <% } %>
+      <% if (errorMsg && errorMsg.length > 0) { %>
+      <div class="alert alert-danger alert-dismissible fade show">
+        <%= errorMsg[0] %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+      <% } %>
+    </div>
+
+    <!-- Main Content -->
+    <main><%- body %></main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+      <div class="container text-center">
+        <p>© 2025 Nội Thất Đẹp | Hotline: 0123 456 789</p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/main.js"></script>
+  </body>
+</html>

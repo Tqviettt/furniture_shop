@@ -1,0 +1,27 @@
+<div class="container py-4">
+  <h4> Kết quả tìm kiếm: "<%= keyword %>"</h4>
+  <p class="text-muted">Tìm thấy <%= products.length %> sản phẩm</p>
+
+  <% if (products.length === 0) { %>
+  <div class="text-center py-5">
+    <h5 class="text-muted">Không tìm thấy sản phẩm nào!</h5>
+    <a href="/products" class="btn btn-primary mt-3">Xem tất cả sản phẩm</a>
+  </div>
+  <% } else { %>
+  <div class="row g-4">
+    <% products.forEach(product => { %>
+    <div class="col-md-3 col-sm-6">
+      <div class="card product-card h-100 shadow-sm">
+        <img src="<%= product.images[0] || '/images/no-image.png' %>"
+          class="card-img-top product-img" alt="<%= product.name %>" />
+        <div class="card-body">
+          <h6><%= product.name %></h6>
+          <p class="text-primary fw-bold"><%= product.price.toLocaleString('vi-VN') %>đ</p>
+          <a href="/products/<%= product._id %>" class="btn btn-outline-primary btn-sm w-100">Xem chi tiết</a>
+        </div>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+  <% } %>
+</div>

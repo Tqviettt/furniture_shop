@@ -1,0 +1,23 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between mb-3">
+    <h3>Tạo Tài Khoản Nhân Viên</h3>
+    <a href="/admin/users" class="btn btn-outline-secondary">← Quay lại</a>
+  </div>
+  <div class="card shadow p-4" style="max-width: 500px">
+    <form action="/admin/users/create-staff" method="POST">
+      <div class="mb-3">
+        <label class="form-label">Họ tên</label>
+        <input type="text" name="name" class="form-control" required />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" class="form-control" required />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Mật khẩu</label>
+        <input type="password" name="password" class="form-control" required />
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Tạo tài khoản</button>
+    </form>
+  </div>
+</div>

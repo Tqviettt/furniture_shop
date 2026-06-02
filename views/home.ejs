@@ -1,0 +1,94 @@
+<!-- Banner Slideshow -->
+<div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+  </div>
+
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <div class="hero-slide" style="background: linear-gradient(135deg, #3d2314, #8b5e3c);">
+        <div class="container h-100 d-flex align-items-center">
+          <div class="text-white">
+            <h1 class="display-3 fw-bold">Nội Thất Cao Cấp</h1>
+            <p class="lead">Biến ngôi nhà của bạn thành thiên đường</p>
+            <a href="/products" class="btn btn-warning btn-lg mt-3">Khám phá ngay</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="carousel-item">
+      <div class="hero-slide" style="background: linear-gradient(135deg, #1a3a4a, #2d6a8a);">
+        <div class="container h-100 d-flex align-items-center">
+          <div class="text-white">
+            <h1 class="display-3 fw-bold">Sofa Sang Trọng</h1>
+            <p class="lead">Chất liệu cao cấp, thiết kế hiện đại</p>
+            <a href="/products/category/sofa" class="btn btn-warning btn-lg mt-3">Xem Sofa</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="carousel-item">
+      <div class="hero-slide" style="background: linear-gradient(135deg, #2d4a1a, #4a8a2d);">
+        <div class="container h-100 d-flex align-items-center">
+          <div class="text-white">
+            <h1 class="display-3 fw-bold">Ưu Đãi Hôm Nay</h1>
+            <p class="lead">Giảm giá đến 50% cho đơn hàng trên 5 triệu</p>
+            <a href="/products" class="btn btn-warning btn-lg mt-3">Mua ngay</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+</div>
+
+<!-- Sản phẩm nổi bật -->
+<div class="container my-5">
+  <h2 class="text-center mb-4"> Sản Phẩm Nổi Bật</h2>
+  <div class="row g-4">
+    <% featured.forEach(product => { %>
+    <div class="col-md-3 col-sm-6">
+      <div class="card product-card h-100 shadow-sm">
+        <div class="product-img-wrapper">
+          <img src="<%= product.images[0] || '/images/no-image.png' %>"
+            class="card-img-top product-img" alt="<%= product.name %>" />
+          <div class="product-img-overlay">
+            <a href="/products/<%= product._id %>" class="btn btn-light btn-sm">
+               Xem chi tiết
+            </a>
+          </div>
+        </div>
+        <div class="card-body d-flex flex-column">
+          <h6 class="card-title"><%= product.name %></h6>
+          <div class="mt-auto">
+            <% if (product.salePrice > 0) { %>
+            <span class="text-danger fw-bold"><%= product.salePrice.toLocaleString('vi-VN') %>đ</span>
+            <small class="text-muted text-decoration-line-through ms-2">
+              <%= product.price.toLocaleString('vi-VN') %>đ
+            </small>
+            <% } else { %>
+            <span class="text-primary fw-bold"><%= product.price.toLocaleString('vi-VN') %>đ</span>
+            <% } %>
+          </div>
+          <div class="mt-2 d-flex gap-2">
+            <a href="/products/<%= product._id %>" class="btn btn-outline-primary btn-sm flex-fill">Xem</a>
+            <button class="btn btn-warning btn-sm add-to-cart" data-id="<%= product._id %>">
+              <i class="fas fa-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+</div>

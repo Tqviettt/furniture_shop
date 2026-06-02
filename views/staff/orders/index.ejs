@@ -1,0 +1,32 @@
+<div class="container-fluid py-4">
+  <h3> Quản Lý Đơn Hàng</h3>
+  <table class="table table-hover">
+    <thead class="table-dark">
+      <tr><th>Mã đơn</th><th>Khách hàng</th><th>Tổng tiền</th><th>Trạng thái</th><th>Cập nhật</th></tr>
+    </thead>
+    <tbody>
+      <% orders.forEach(order => { %>
+      <tr>
+        <td><small>#<%= order._id.toString().slice(-8).toUpperCase() %></small></td>
+        <td><%= order.user?.name || 'N/A' %></td>
+        <td class="text-danger fw-bold"><%= order.total.toLocaleString('vi-VN') %>đ</td>
+        <td>
+          <span class="badge bg-<%= order.orderStatus === 'delivered' ? 'success' : order.orderStatus === 'cancelled' ? 'danger' : 'warning' %>">
+            <%= order.orderStatus %>
+          </span>
+        </td>
+        <td>
+          <form action="/staff/orders/<%= order._id %>/status?_method=PUT" method="POST" class="d-flex gap-2">
+            <select name="status" class="form-select form-select-sm" style="width:150px;">
+              <% ['pending','confirmed','shipping','delivered','cancelled'].forEach(s => { %>
+              <option value="<%= s %>" <%= order.orderStatus === s ? 'selected' : '' %>><%= s %></option>
+              <% }) %>
+            </select>
+            <button class="btn btn-primary btn-sm">Lưu</button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>

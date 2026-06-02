@@ -1,0 +1,86 @@
+<div class="container py-4">
+  <h3> Giỏ Hàng</h3>
+
+  <% if (cart.length === 0) { %>
+  <div class="text-center py-5">
+    <h5 class="text-muted">Giỏ hàng trống!</h5>
+    <a href="/products" class="btn btn-primary mt-3">Mua sắm ngay</a>
+  </div>
+  <% } else { %>
+  <div class="row">
+    <div class="col-md-8">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Sản phẩm</th>
+            <th>Đơn giá</th>
+            <th>Số lượng</th>
+            <th>Thành tiền</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% cart.forEach(item => { %>
+          <% const price = item.salePrice > 0 ? item.salePrice : item.price %>
+          <tr>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <img src="<%= item.image %>" style="width:60px; height:60px; object-fit:cover;" class="rounded" />
+                <span><%= item.name %></span>
+              </div>
+            </td>
+            <td><%= price.toLocaleString('vi-VN') %>đ</td>
+            <td>
+              <input type="number" class="form-control update-qty" style="width:70px;"
+                value="<%= item.quantity %>" min="1"
+                data-id="<%= item.productId %>" />
+            </td>
+            <td><%= (price * item.quantity).toLocaleString('vi-VN') %>đ</td>
+            <td>
+              <form action="/cart/remove/<%= item.productId %>?_method=DELETE" method="POST" class="d-inline">
+              <button type="submit" class="btn btn-danger btn-sm"
+                onclick="return confirm('Xóa sản phẩm này?')">
+              <i class="fas fa-trash"></i>
+              </button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+
+      <form action="/cart/clear?_method=DELETE" method="POST" class="d-inline">
+      <button type="submit" class="btn btn-outline-danger btn-sm"
+      onclick="return confirm('Xóa toàn bộ giỏ hàng?')">
+        Xóa tất cả
+      </button>
+      </form>
+    </div>
+
+    <!-- Tổng tiền -->
+    <div class="col-md-4">
+      <div class="card p-3 shadow-sm">
+        <h5>Tổng đơn hàng</h5>
+        <hr />
+        <div class="d-flex justify-content-between mb-2">
+          <span>Tạm tính:</span>
+          <strong><%= total.toLocaleString('vi-VN') %>đ</strong>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span>Phí ship:</span>
+          <strong><%= total > 5000000 ? 'Miễn phí' : '50.000đ' %></strong>
+        </div>
+        <hr />
+        <div class="d-flex justify-content-between mb-3">
+          <strong>Tổng cộng:</strong>
+          <strong class="text-danger fs-5">
+            <%= (total > 5000000 ? total : total + 50000).toLocaleString('vi-VN') %>đ
+          </strong>
+        </div>
+        <a href="/orders/checkout" class="btn btn-primary w-100">Đặt hàng</a>
+        <a href="/products" class="btn btn-outline-secondary w-100 mt-2">Tiếp tục mua</a>
+      </div>
+    </div>
+  </div>
+  <% } %>
+</div>

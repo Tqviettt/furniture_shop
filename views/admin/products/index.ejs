@@ -1,0 +1,102 @@
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between mb-3">
+    <h3> Quản Lý Sản Phẩm</h3>
+    <a href="/admin/products/create" class="btn btn-primary"> Thêm sản phẩm</a>
+  </div>
+
+  <!-- Sản phẩm chờ duyệt -->
+  <% const pendingProducts = products.filter(p => p.approvalStatus === 'pending') %>
+  <% if (pendingProducts.length > 0) { %>
+  <div class="alert alert-warning">
+     Có <strong><%= pendingProducts.length %></strong> sản phẩm chờ phê duyệt!
+  </div>
+  <% } %>
+
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th>Ảnh</th>
+          <th>Tên</th>
+          <th>Danh mục</th>
+          <th>Giá</th>
+          <th>Kho</th>
+          <th>Trạng thái</th>
+          <th>Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% products.forEach(p => { %>
+        <tr class="<%= p.approvalStatus === 'pending' ? 'table-warning' : '' %>">
+          <td>
+            <img src="<%= p.images[0] || '/images/no-image.png' %>"
+              style="width:50px;height:50px;object-fit:cover;" class="rounded" />
+          </td>
+          <td><%= p.name %></td>
+          <td><span class="badge bg-secondary"><%= p.category %></span></td>
+          <td><%= p.price.toLocaleString('vi-VN') %>đ</td>
+          <td><%= p.stock %></td>
+          <td>
+            <% if (p.approvalStatus === 'pending') { %>
+              <span class="badge bg-warning text-dark"> Chờ duyệt</span>
+            <% } else if (p.approvalStatus === 'approved') { %>
+              <span class="badge bg-success"> Đã duyệt</span>
+            <% } else { %>
+              <span class="badge bg-danger"> Từ chối</span>
+            <% } %>
+          </td>
+          <td>
+            <!-- Nút duyệt/từ chối nếu đang pending -->
+            <% if (p.approvalStatus === 'pending') { %>
+            <form action="/admin/products/<%= p._id %>/approve?_method=PUT"
+              method="POST" class="d-inline">
+              <button class="btn btn-success btn-sm"> Duyệt</button>
+            </form>
+            <button class="btn btn-danger btn-sm"
+              onclick="rejectProduct('<%= p._id %>')"> Từ chối</button>
+            <% } %>
+            <a href="/admin/products/<%= p._id %>/edit"
+              class="btn btn-warning btn-sm"></a>
+            <form action="/admin/products/<%= p._id %>?_method=DELETE"
+              method="POST" class="d-inline">
+              <button class="btn btn-danger btn-sm"
+                onclick="return confirm('Xóa sản phẩm?')"></button>
+            </form>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal từ chối -->
+<div class="modal fade" id="rejectModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"> Từ chối sản phẩm</h5>
+      </div>
+      <form id="rejectForm" method="POST">
+        <input type="hidden" name="_method" value="PUT" />
+        <div class="modal-body">
+          <label class="form-label">Lý do từ chối</label>
+          <textarea name="note" class="form-control" rows="3"
+            placeholder="Nhập lý do từ chối..."></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary"
+            data-bs-dismiss="modal">Hủy</button>
+          <button type="submit" class="btn btn-danger">Xác nhận từ chối</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function rejectProduct(id) {
+  document.getElementById("rejectForm").action = `/admin/products/${id}/reject`;
+  new bootstrap.Modal(document.getElementById("rejectModal")).show();
+}
+</script>

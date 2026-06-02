@@ -1,0 +1,76 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-7">
+      <div class="card shadow">
+        <div class="card-body p-4">
+          <h3 class="mb-4"> Hồ Sơ Của Tôi</h3>
+          <form action="/profile?_method=PUT" method="POST">
+            <div class="mb-3">
+              <label class="form-label">Họ tên</label>
+              <input
+                type="text"
+                name="name"
+                class="form-control"
+                value="<%= user.name %>"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                value="<%= user.email %>"
+                disabled
+              />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Số điện thoại</label>
+              <input
+                type="text"
+                name="phone"
+                class="form-control"
+                value="<%= user.phone || '' %>"
+              />
+            </div>
+            <hr />
+            <h5>Địa chỉ giao hàng</h5>
+            <div class="mb-3">
+              <label class="form-label">Địa chỉ</label>
+              <input
+                type="text"
+                name="street"
+                class="form-control"
+                value="<%= user.address?.street || '' %>"
+              />
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Quận/Huyện</label>
+                <input
+                  type="text"
+                  name="district"
+                  class="form-control"
+                  value="<%= user.address?.district || '' %>"
+                />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Tỉnh/Thành phố</label>
+                <input
+                  type="text"
+                  name="city"
+                  class="form-control"
+                  value="<%= user.address?.city || '' %>"
+                />
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Cập Nhật</button>
+            <a href="/orders/my-orders" class="btn btn-outline-secondary ms-2"
+              >Đơn hàng của tôi</a
+            >
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

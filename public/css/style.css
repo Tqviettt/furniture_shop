@@ -1,0 +1,248 @@
+:root {
+  --primary: #8b5e3c;
+  --secondary: #d4a96a;
+}
+
+body { font-family: "Segoe UI", sans-serif; }
+
+.hero-banner {
+  background: linear-gradient(135deg, #3d2314, #8b5e3c);
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+}
+
+.product-card {
+  transition: transform 0.3s, box-shadow 0.3s;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.product-img {
+  height: 220px;
+  object-fit: cover;
+}
+
+.navbar { box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+
+.btn-primary { background-color: var(--primary); border-color: var(--primary); }
+.btn-warning { background-color: var(--secondary); border-color: var(--secondary); color: white; }
+
+/* Hero Carousel */
+.hero-slide {
+  height: 450px;
+  display: flex;
+  align-items: center;
+}
+
+/* Product Image Wrapper */
+.product-img-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.product-img-overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.product-img-wrapper:hover .product-img-overlay {
+  opacity: 1;
+}
+
+.product-img-wrapper:hover .product-img {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+.product-img {
+  transition: transform 0.3s ease;
+}
+
+.product-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1;
+}
+
+/* Main product image */
+.main-image-wrapper {
+  position: relative;
+  cursor: zoom-in;
+}
+
+.main-product-img {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.main-product-img:hover {
+  transform: scale(1.03);
+}
+
+.zoom-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  opacity: 0.8;
+}
+
+/* Thumbnails */
+.thumbnail-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border 0.2s;
+}
+
+.thumbnail-img:hover,
+.thumbnail-img.active-thumb {
+  border-color: #8b5e3c;
+}
+
+/* Lightbox */
+.lightbox-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.9);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-content {
+  position: relative;
+  max-width: 90%;
+  max-height: 90vh;
+}
+
+.lightbox-img {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.lightbox-prev,
+.lightbox-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  font-size: 24px;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.lightbox-prev { left: -60px; }
+.lightbox-next { right: -60px; }
+
+.lightbox-counter {
+  text-align: center;
+  color: white;
+  margin-top: 10px;
+}
+
+/* Breadcrumb */
+.breadcrumb-item a {
+  color: #8b5e3c;
+  text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+  text-decoration: underline;
+}
+
+/* Star Rating */
+.star-rating {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 5px;
+}
+.star-rating input { display: none; }
+.star-rating label {
+  font-size: 30px;
+  color: #ccc;
+  cursor: pointer;
+}
+.star-rating input:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+  color: #f5a623;
+}
+/* Order Timeline */
+.order-timeline {
+  padding: 10px 0;
+}
+
+.timeline-line {
+  position: absolute;
+  top: 20px;
+  left: 10%;
+  width: 80%;
+  height: 3px;
+  background: #dee2e6;
+  z-index: 0;
+}
+
+.timeline-step {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  opacity: 0.4;
+}
+
+.timeline-step.active {
+  opacity: 1;
+}
+
+.timeline-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #dee2e6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 5px;
+  font-size: 18px;
+  border: 3px solid #dee2e6;
+}
+
+.timeline-step.active .timeline-icon {
+  background: #fff;
+  border-color: #8b5e3c;
+}

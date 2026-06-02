@@ -1,0 +1,63 @@
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between mb-4">
+    <h3> Quản Lý Người Dùng</h3>
+    <a href="/admin/users/create-staff" class="btn btn-primary"> Tạo nhân viên</a>
+  </div>
+
+  <!-- Nhân viên -->
+  <h5 class="text-warning"> Nhân Viên (<%= staffList.length %>)</h5>
+  <table class="table table-bordered mb-5">
+    <thead class="table-warning">
+      <tr><th>Tên</th><th>Email</th><th>Trạng thái</th><th>Thao tác</th></tr>
+    </thead>
+    <tbody>
+      <% staffList.forEach(u => { %>
+      <tr>
+        <td><%= u.name %></td>
+        <td><%= u.email %></td>
+        <td>
+          <span class="badge bg-<%= u.isActive ? 'success' : 'danger' %>">
+            <%= u.isActive ? 'Hoạt động' : 'Bị khóa' %>
+          </span>
+        </td>
+        <td>
+          <form action="/admin/users/<%= u._id %>/toggle?_method=PUT" method="POST" class="d-inline">
+            <button class="btn btn-sm btn-<%= u.isActive ? 'danger' : 'success' %>">
+              <%= u.isActive ? ' Khóa' : ' Mở' %>
+            </button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <!-- Khách hàng -->
+  <h5 class="text-primary"> Khách Hàng (<%= customers.length %>)</h5>
+  <table class="table table-bordered">
+    <thead class="table-primary">
+      <tr><th>Tên</th><th>Email</th><th>SĐT</th><th>Trạng thái</th><th>Thao tác</th></tr>
+    </thead>
+    <tbody>
+      <% customers.forEach(u => { %>
+      <tr>
+        <td><%= u.name %></td>
+        <td><%= u.email %></td>
+        <td><%= u.phone || '-' %></td>
+        <td>
+          <span class="badge bg-<%= u.isActive ? 'success' : 'danger' %>">
+            <%= u.isActive ? 'Hoạt động' : 'Bị khóa' %>
+          </span>
+        </td>
+        <td>
+          <form action="/admin/users/<%= u._id %>/toggle?_method=PUT" method="POST" class="d-inline">
+            <button class="btn btn-sm btn-<%= u.isActive ? 'danger' : 'success' %>">
+              <%= u.isActive ? ' Khóa' : ' Mở' %>
+            </button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>

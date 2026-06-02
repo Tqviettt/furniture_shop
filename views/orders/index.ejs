@@ -1,0 +1,55 @@
+<div class="container py-4">
+  <h3> Đơn Hàng Của Tôi</h3>
+
+  <% if (orders.length === 0) { %>
+  <div class="text-center py-5">
+    <h5 class="text-muted">Bạn chưa có đơn hàng nào!</h5>
+    <a href="/products" class="btn btn-primary mt-3">Mua sắm ngay</a>
+  </div>
+  <% } else { %>
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th>Mã đơn</th>
+          <th>Ngày đặt</th>
+          <th>Tổng tiền</th>
+          <th>Thanh toán</th>
+          <th>Trạng thái</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% orders.forEach(order => { %>
+        <tr>
+          <td><small>#<%= order._id.toString().slice(-8).toUpperCase() %></small></td>
+          <td><%= new Date(order.createdAt).toLocaleDateString('vi-VN') %></td>
+          <td class="text-danger fw-bold"><%= order.total.toLocaleString('vi-VN') %>đ</td>
+          <td>
+            <span class="badge <%= order.paymentMethod === 'cod' ? 'bg-secondary' : 'bg-info' %>">
+              <%= order.paymentMethod.toUpperCase() %>
+            </span>
+          </td>
+          <td>
+            <%
+              const statusMap = {
+                pending: ['warning', 'Chờ xác nhận'],
+                confirmed: ['info', 'Đã xác nhận'],
+                shipping: ['primary', 'Đang giao'],
+                delivered: ['success', 'Đã giao'],
+                cancelled: ['danger', 'Đã hủy']
+              };
+              const [color, label] = statusMap[order.orderStatus] || ['secondary', order.orderStatus];
+            %>
+            <span class="badge bg-<%= color %>"><%= label %></span>
+          </td>
+          <td>
+            <a href="/orders/<%= order._id %>" class="btn btn-outline-primary btn-sm">Chi tiết</a>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <% } %>
+</div>

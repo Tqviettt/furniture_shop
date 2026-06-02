@@ -1,0 +1,29 @@
+<div class="container py-4">
+  <h4> Danh mục: <span class="text-primary"><%= category %></span></h4>
+  <% if (products.length === 0) { %>
+  <div class="text-center py-5">
+    <h5 class="text-muted">Chưa có sản phẩm trong danh mục này!</h5>
+  </div>
+  <% } else { %>
+  <div class="row g-4 mt-2">
+    <% products.forEach(product => { %>
+    <div class="col-md-3 col-sm-6">
+      <div class="card product-card h-100 shadow-sm">
+        <img src="<%= product.images[0] || '/images/no-image.png' %>"
+          class="card-img-top product-img" alt="<%= product.name %>" />
+        <div class="card-body">
+          <h6><%= product.name %></h6>
+          <p class="text-primary fw-bold"><%= product.price.toLocaleString('vi-VN') %>đ</p>
+          <div class="d-flex gap-2">
+            <a href="/products/<%= product._id %>" class="btn btn-outline-primary btn-sm flex-fill">Xem</a>
+            <button class="btn btn-warning btn-sm add-to-cart" data-id="<%= product._id %>">
+              <i class="fas fa-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+  <% } %>
+</div>

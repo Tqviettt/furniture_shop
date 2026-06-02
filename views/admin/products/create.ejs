@@ -1,0 +1,76 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between mb-3">
+    <h3>Thêm Sản Phẩm</h3>
+    <a href="/admin/products" class="btn btn-outline-secondary">← Quay lại</a>
+  </div>
+
+  <div class="card p-4 shadow-sm">
+    <form
+      action="<%= formAction %>"
+      method="POST"
+      enctype="multipart/form-data"
+    >
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Tên sản phẩm *</label>
+          <input type="text" name="name" class="form-control" required />
+        </div>
+        <div class="col-md-3 mb-3">
+          <label class="form-label">Danh mục *</label>
+          <select name="category" class="form-select" required>
+            <option value="sofa">Sofa</option>
+            <option value="ban">Bàn</option>
+            <option value="ghe">Ghế</option>
+            <option value="giuong">Giường</option>
+            <option value="tu">Tủ</option>
+            <option value="ke">Kệ</option>
+            <option value="khac">Khác</option>
+            <option value="">-- Chọn danh mục --</option>
+          </select>
+        </div>
+        <div class="col-md-3 mb-3">
+          <label class="form-label">Chất liệu</label>
+          <input type="text" name="material" class="form-control" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Giá gốc *</label>
+          <input type="number" name="price" class="form-control" required />
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Giá sale (0 = không sale)</label>
+          <input
+            type="number"
+            name="salePrice"
+            class="form-control"
+            value="0"
+          />
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Số lượng kho</label>
+          <input type="number" name="stock" class="form-control" value="0" />
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Mô tả</label>
+        <textarea name="description" class="form-control" rows="3"></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Ảnh sản phẩm (tối đa 5 ảnh)</label>
+        <input
+          type="file"
+          name="images"
+          class="form-control"
+          multiple
+          accept="image/*"
+        />
+      </div>
+
+      <button type="submit" class="btn btn-primary">Lưu sản phẩm</button>
+    </form>
+  </div>
+</div>

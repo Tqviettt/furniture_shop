@@ -1,0 +1,20 @@
+<div class="container py-4">
+  <h3> Xin chào Nhân Viên <%= currentUser.name %>!</h3>
+  <div class="row g-4 mt-2">
+    <div class="col-md-4">
+      <div class="card bg-warning text-white p-3 shadow">
+        <h2><%= stats.pendingOrders %></h2>
+        <p class="mb-0"> Đơn chờ xử lý</p>
+        <a href="/staff/orders" class="text-white small">Xử lý →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt-4 p-3">
+    <h5> Chức năng</h5>
+    <div class="list-group mt-2">
+      <a href="/staff/orders" class="list-group-item list-group-item-action"> Quản lý đơn hàng</a>
+      <a href="/chat/staff" class="list-group-item list-group-item-action">  Chat với khách hàng</a>
+    </div>
+  </div>
+</div>

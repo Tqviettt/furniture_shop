@@ -1,0 +1,45 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between mb-3">
+    <h3>Thêm Bài Viết</h3>
+    <a href="/admin/news" class="btn btn-outline-secondary">← Quay lại</a>
+  </div>
+  <div class="card p-4 shadow-sm">
+    <form action="/admin/news" method="POST" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label class="form-label">Tiêu đề bài viết *</label>
+        <input type="text" name="title" class="form-control" required />
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Danh mục</label>
+          <select name="category" class="form-select">
+            <option value="Tin tức">Tin tức</option>
+            <option value="Review Khách Hàng">Review Khách Hàng</option>
+            <option value="Góc Chia Sẻ">Góc Chia Sẻ</option>
+            <option value="Câu Chuyện Thành Tựu">Câu Chuyện Thành Tựu</option>
+          </select>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Trạng thái</label>
+          <div class="form-check form-switch mt-2">
+            <input class="form-check-input" type="checkbox" name="isActive" checked>
+            <label class="form-check-label">Hiển thị</label>
+          </div>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Ảnh đại diện</label>
+        <input type="file" name="image" class="form-control" accept="image/*" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Đoạn tóm tắt (Excerpt) *</label>
+        <textarea name="excerpt" class="form-control" rows="2" required></textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Nội dung chi tiết *</label>
+        <textarea name="content" class="form-control" rows="10" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Lưu Bài Viết</button>
+    </form>
+  </div>
+</div>

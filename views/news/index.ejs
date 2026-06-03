@@ -1,0 +1,45 @@
+<div class="container py-5 my-5">
+  <div class="text-center mb-5">
+    <h1 class="display-4 fw-bold serif">Tin Tức & Góc Chia Sẻ</h1>
+    <p class="text-muted">Cập nhật những xu hướng nội thất mới nhất và kinh nghiệm từ chuyên gia</p>
+  </div>
+
+  <div class="row g-4">
+    <% if (newsList.length === 0) { %>
+      <div class="col-12 text-center text-muted">Chưa có bài viết nào.</div>
+    <% } %>
+    <% newsList.forEach(news => { %>
+    <div class="col-md-4">
+      <div class="card h-100 border-0 shadow-sm news-card">
+        <a href="/news/<%= news.slug %>" class="text-decoration-none">
+          <div class="position-relative overflow-hidden" style="height: 250px;">
+            <img src="<%= news.image %>" class="w-100 h-100 object-fit-cover hover-zoom" alt="<%= news.title %>">
+            <div class="position-absolute top-0 start-0 bg-white m-3 text-center p-2 shadow-sm border border-danger" style="min-width: 50px;">
+              <span class="d-block fw-bold text-danger fs-5"><%= new Date(news.createdAt).getDate() %></span>
+              <span class="d-block small text-muted text-uppercase">Th<%= new Date(news.createdAt).getMonth() + 1 %></span>
+            </div>
+            <span class="position-absolute top-0 end-0 bg-danger text-white px-2 py-1 m-3 small rounded fw-bold">
+              <%= news.category %>
+            </span>
+          </div>
+        </a>
+        <div class="card-body p-4 text-center">
+          <h5 class="card-title fw-bold mb-3 mt-2">
+            <a href="/news/<%= news.slug %>" class="text-dark text-decoration-none hover-danger text-uppercase serif" style="font-size: 1.1rem;"><%= news.title %></a>
+          </h5>
+          <p class="card-text text-muted small mb-4" style="line-height: 1.6;"><%= news.excerpt %></p>
+          <a href="/news/<%= news.slug %>" class="text-danger fw-bold text-decoration-none small">XEM THÊM</a>
+        </div>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+</div>
+
+<style>
+.news-card { transition: transform 0.3s ease; }
+.news-card:hover { transform: translateY(-5px); }
+.hover-zoom { transition: transform 0.5s ease; }
+.news-card:hover .hover-zoom { transform: scale(1.05); }
+.hover-danger:hover { color: #dc3545 !important; }
+</style>

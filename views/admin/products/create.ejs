@@ -60,14 +60,12 @@
       </div>
 
       <div class="mb-3">
-        <label class="form-label">Ảnh sản phẩm (tối đa 5 ảnh)</label>
-        <input
-          type="file"
-          name="images"
-          class="form-control"
-          multiple
-          accept="image/*"
-        />
+        <label class="form-label">Ảnh sản phẩm (tối đa 3 ảnh)</label>
+        <div class="d-flex flex-column gap-2">
+          <input type="file" name="images" class="form-control" accept="image/*" />
+          <input type="file" name="images" class="form-control" accept="image/*" />
+          <input type="file" name="images" class="form-control" accept="image/*" />
+        </div>
       </div>
 
       <button type="submit" class="btn btn-primary">Lưu sản phẩm</button>

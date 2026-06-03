@@ -1,0 +1,60 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between mb-3">
+    <h3>Quản lý Đánh giá</h3>
+  </div>
+
+  <div class="card p-3 shadow-sm">
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Sản phẩm</th>
+          <th>Người dùng</th>
+          <th>Sao</th>
+          <th>Nội dung</th>
+          <th>Ngày tạo</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (reviews && reviews.length > 0) { %>
+        <% reviews.forEach(review => { %>
+        <tr>
+          <td>
+            <% if (review.product) { %>
+              <a href="/products/<%= review.product._id %>" class="text-decoration-none">
+                <img src="<%= review.product.images[0] || '/images/no-image.png' %>" width="40" class="me-2 rounded">
+                <%= review.product.name %>
+              </a>
+            <% } else { %>
+              <span class="text-muted">Sản phẩm đã xóa</span>
+            <% } %>
+          </td>
+          <td>
+            <strong><%= review.userName %></strong><br>
+            <small class="text-muted"><%= review.user ? review.user.email : '' %></small>
+          </td>
+          <td>
+            <span class="text-warning">
+              <% for(let i=1; i<=5; i++) { %>
+                <%= i <= review.rating ? '★' : '☆' %>
+              <% } %>
+            </span>
+          </td>
+          <td><%= review.comment %></td>
+          <td><%= new Date(review.createdAt).toLocaleDateString('vi-VN') %></td>
+          <td>
+            <form action="/admin/reviews/<%= review._id %>?_method=DELETE" method="POST" class="d-inline">
+              <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa đánh giá này?')">Xóa</button>
+            </form>
+          </td>
+        </tr>
+        <% }) %>
+        <% } else { %>
+        <tr>
+          <td colspan="6" class="text-center py-4">Chưa có đánh giá nào.</td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>

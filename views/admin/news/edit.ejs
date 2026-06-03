@@ -1,0 +1,46 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between mb-3">
+    <h3>Sửa Bài Viết</h3>
+    <a href="/admin/news" class="btn btn-outline-secondary">← Quay lại</a>
+  </div>
+  <div class="card p-4 shadow-sm">
+    <form action="/admin/news/<%= news._id %>?_method=PUT" method="POST" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label class="form-label">Tiêu đề bài viết *</label>
+        <input type="text" name="title" class="form-control" value="<%= news.title %>" required />
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Danh mục</label>
+          <select name="category" class="form-select">
+            <option value="Tin tức" <%= news.category === 'Tin tức' ? 'selected' : '' %>>Tin tức</option>
+            <option value="Review Khách Hàng" <%= news.category === 'Review Khách Hàng' ? 'selected' : '' %>>Review Khách Hàng</option>
+            <option value="Góc Chia Sẻ" <%= news.category === 'Góc Chia Sẻ' ? 'selected' : '' %>>Góc Chia Sẻ</option>
+            <option value="Câu Chuyện Thành Tựu" <%= news.category === 'Câu Chuyện Thành Tựu' ? 'selected' : '' %>>Câu Chuyện Thành Tựu</option>
+          </select>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Trạng thái</label>
+          <div class="form-check form-switch mt-2">
+            <input class="form-check-input" type="checkbox" name="isActive" <%= news.isActive ? 'checked' : '' %>>
+            <label class="form-check-label">Hiển thị</label>
+          </div>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Ảnh đại diện (để trống nếu không đổi)</label>
+        <div class="mb-2"><img src="<%= news.image %>" height="100" class="rounded" /></div>
+        <input type="file" name="image" class="form-control" accept="image/*" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Đoạn tóm tắt (Excerpt) *</label>
+        <textarea name="excerpt" class="form-control" rows="2" required><%= news.excerpt %></textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Nội dung chi tiết *</label>
+        <textarea name="content" class="form-control" rows="10" required><%= news.content %></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Cập Nhật</button>
+    </form>
+  </div>
+</div>

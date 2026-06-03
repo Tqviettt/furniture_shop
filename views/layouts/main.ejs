@@ -1,130 +1,345 @@
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= title %> | Nội Thất Đẹp</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="/css/style.css" />
-  </head>
-  <body>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container">
-        <a class="navbar-brand fw-bold" href="/"> Nội Thất Đẹp</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>
+    <%= title %> | Nội Thất Đẹp
+  </title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
 
-        <div class="collapse navbar-collapse" id="navMenu">
-          <ul class="navbar-nav me-auto">
-            <li class="nav-item"><a class="nav-link" href="/">Trang chủ</a></li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Sản phẩm</a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="/products/category/sofa">Sofa</a></li>
-                <li><a class="dropdown-item" href="/products/category/ban">Bàn</a></li>
-                <li><a class="dropdown-item" href="/products/category/ghe">Ghế</a></li>
-                <li><a class="dropdown-item" href="/products/category/giuong">Giường</a></li>
-                <li><a class="dropdown-item" href="/products/category/tu">Tủ</a></li>
-              </ul>
-            </li>
-          </ul>
+<body>
 
-          <!-- Search -->
-          <form class="d-flex me-3" action="/products/search" method="GET">
-            <input class="form-control me-2" type="search" name="q" placeholder="Tìm kiếm..." />
-            <button class="btn btn-outline-light" type="submit">
-              <i class="fas fa-search"></i>
-            </button>
-          </form>
+  <!-- Navbar -->
+  <nav id="mainNav"
+    class="navbar navbar-expand-lg <%= title === 'Nội Thất Đẹp - Trang Chủ' ? 'navbar-transparent navbar-dark' : 'navbar-light bg-white border-bottom' %> py-3">
+    <div class="container">
+      <a class="navbar-brand fw-bold fs-4 serif" href="/"> Nội Thất Đẹp</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-          <!-- User Menu -->
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link" href="/cart">
-                <i class="fas fa-shopping-cart"></i>
-                <span class="badge bg-danger"><%= cartCount %></span>
-              </a>
-            </li>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" href="/">Trang chủ</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Sản phẩm</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/products/category/sofa">Sofa</a></li>
+              <li><a class="dropdown-item" href="/products/category/ban">Bàn</a></li>
+              <li><a class="dropdown-item" href="/products/category/ghe">Ghế</a></li>
+              <li><a class="dropdown-item" href="/products/category/giuong">Giường</a></li>
+              <li><a class="dropdown-item" href="/products/category/tu">Tủ</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="/news">Tin tức</a></li>
+          <li class="nav-item"><a class="nav-link" href="/about">Giới thiệu</a></li>
+          <li class="nav-item"><a class="nav-link" href="/contact">Liên hệ</a></li>
+        </ul>
 
-            <% if (currentUser) { %>
+        <!-- Search -->
+        <form class="d-flex me-3" action="/products/search" method="GET">
+          <input class="form-control me-2 border-0 bg-light rounded-0" type="search" name="q"
+            placeholder="Tìm kiếm..." />
+          <button class="btn btn-outline-dark border-0 rounded-0" type="submit">
+            <i class="fas fa-search"></i>
+          </button>
+        </form>
+
+        <!-- User Menu -->
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/cart">
+              <i class="fas fa-shopping-cart"></i>
+              <span class="badge bg-danger">
+                <%= cartCount %>
+              </span>
+            </a>
+          </li>
+
+          <% if (currentUser) { %>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                <% if (isAdmin) { %> 
-                <% } else if (isStaff) { %> 
-                <% } else { %>  <% } %>
-                <%= currentUser.name %>
+                <% if (isAdmin) { %>
+                  <% } else if (isStaff) { %>
+                    <% } else { %>
+                      <% } %>
+                        <%= currentUser.name %>
               </a>
               <ul class="dropdown-menu dropdown-menu-end">
                 <% if (isAdmin) { %>
-                <li><h6 class="dropdown-header text-danger">ADMIN</h6></li>
-                <li><a class="dropdown-item" href="/admin/dashboard"> Dashboard</a></li>
-                <li><a class="dropdown-item" href="/admin/products"> Sản phẩm</a></li>
-                <li><a class="dropdown-item" href="/admin/orders"> Đơn hàng</a></li>
-                <li><a class="dropdown-item" href="/admin/users"> Người dùng</a></li>
-                <li><hr class="dropdown-divider" /></li>
+                  <li>
+                    <h6 class="dropdown-header text-danger">ADMIN</h6>
+                  </li>
+                  <li><a class="dropdown-item" href="/admin/dashboard"> Dashboard</a></li>
+                  <li><a class="dropdown-item" href="/admin/products"> Sản phẩm</a></li>
+                  <li><a class="dropdown-item" href="/admin/orders"> Đơn hàng</a></li>
+                  <li><a class="dropdown-item" href="/admin/users"> Người dùng</a></li>
+                  <li><a class="dropdown-item" href="/admin/news"> Tin tức</a></li>
+                  <li><a class="dropdown-item" href="/admin/reviews"> Đánh giá</a></li>
+                  <li>
+                    <hr class="dropdown-divider" />
+                  </li>
 
-                <% } else if (isStaff) { %>
-                <li><h6 class="dropdown-header text-warning">NHÂN VIÊN</h6></li>
-                <li><a class="dropdown-item" href="/staff/dashboard"> Dashboard</a></li>
-                <li><a class="dropdown-item" href="/chat/staff"> Chat</a></li>
-                <li><a class="dropdown-item" href="/staff/orders"> Đơn hàng</a></li>
-                <li><hr class="dropdown-divider" /></li>
+                  <% } else if (isStaff) { %>
+                    <li>
+                      <h6 class="dropdown-header text-warning">NHÂN VIÊN</h6>
+                    </li>
+                    <li><a class="dropdown-item" href="/staff/dashboard"> Dashboard</a></li>
+                    <li><a class="dropdown-item" href="/chat/staff"> Chat</a></li>
+                    <li><a class="dropdown-item" href="/staff/orders"> Đơn hàng</a></li>
+                    <li>
+                      <hr class="dropdown-divider" />
+                    </li>
 
-                <% } else { %>
-                <li><a class="dropdown-item" href="/profile"> Hồ sơ</a></li>
-                <li><a class="dropdown-item" href="/orders/my-orders"> Đơn hàng</a></li>
-                <li><hr class="dropdown-divider" /></li>
-                <% } %>
+                    <% } else { %>
+                      <li><a class="dropdown-item" href="/profile"> Hồ sơ</a></li>
+                      <li><a class="dropdown-item" href="/orders/my-orders"> Đơn hàng</a></li>
+                      <li>
+                        <hr class="dropdown-divider" />
+                      </li>
+                      <% } %>
 
-                <li>
-                  <form action="/logout" method="POST">
-                    <button class="dropdown-item text-danger" type="submit"> Đăng xuất</button>
-                  </form>
-                </li>
+                        <li>
+                          <form action="/logout" method="POST">
+                            <button class="dropdown-item text-danger" type="submit"> Đăng xuất</button>
+                          </form>
+                        </li>
               </ul>
             </li>
 
             <% } else { %>
-            <li class="nav-item"><a class="nav-link" href="/login">Đăng nhập</a></li>
-            <li class="nav-item"><a class="nav-link" href="/register">Đăng ký</a></li>
-            <% } %>
-          </ul>
+              <li class="nav-item"><a class="nav-link" href="/login">Đăng nhập</a></li>
+              <li class="nav-item"><a class="nav-link" href="/register">Đăng ký</a></li>
+              <% } %>
+        </ul>
 
-        </div><!-- ← đóng navbar-collapse -->
-      </div><!-- ← đóng container -->
-    </nav><!-- ← đóng nav -->
+      </div><!-- ← đóng navbar-collapse -->
+    </div><!-- ← đóng container -->
+  </nav><!-- ← đóng nav -->
 
-    <!-- Flash Messages -->
-    <div class="container mt-3">
-      <% if (successMsg && successMsg.length > 0) { %>
+  <!-- Flash Messages -->
+  <div class="container mt-3">
+    <% if (successMsg && successMsg.length> 0) { %>
       <div class="alert alert-success alert-dismissible fade show">
         <%= successMsg[0] %>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
       </div>
       <% } %>
-      <% if (errorMsg && errorMsg.length > 0) { %>
-      <div class="alert alert-danger alert-dismissible fade show">
-        <%= errorMsg[0] %>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <% if (errorMsg && errorMsg.length> 0) { %>
+          <div class="alert alert-danger alert-dismissible fade show">
+            <%= errorMsg[0] %>
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+          <% } %>
+  </div>
+
+  <!-- Main Content -->
+  <main><%- body %></main>
+
+  <!-- Footer -->
+  <footer class="footer-premium pt-5 pb-3 mt-5">
+    <div class="container">
+      <div class="row g-4">
+        <!-- Cột 1 -->
+        <div class="col-lg-4 col-md-6 pe-lg-5">
+          <h6 class="text-uppercase fw-bold mb-4 position-relative footer-heading">Giới thiệu về</h6>
+          <p class="text-secondary small mb-0" style="line-height: 1.8;">
+            Thương hiệu nội thất uy tín hàng đầu với nhiều năm hình thành và phát triển, tự hào là điểm đến đáng tin cậy
+            của hàng ngàn khách hàng khi tìm kiếm các giải pháp nội thất đẳng cấp, tiện nghi và thẩm mỹ.
+          </p>
+        </div>
+
+        <!-- Cột 2 -->
+        <div class="col-lg-2 col-md-6">
+          <h6 class="text-uppercase fw-bold mb-4 position-relative footer-heading">Thông tin chung</h6>
+          <ul class="list-unstyled footer-links small mb-4">
+            <li class="mb-3"><a href="/contact"><i class="fas fa-angle-right me-2 text-muted"></i>Liên hệ An Việt</a>
+            </li>
+            <li class="mb-3"><a href="/policies/warranty"><i class="fas fa-angle-right me-2 text-muted"></i>Chính sách
+                bảo hành</a></li>
+            <li class="mb-3"><a href="/policies/return"><i class="fas fa-angle-right me-2 text-muted"></i>Chính sách đổi
+                trả</a></li>
+            <li class="mb-3"><a href="/policies/shipping"><i class="fas fa-angle-right me-2 text-muted"></i>Chính sách
+                vận chuyển</a></li>
+          </ul>
+          <div class="border-top border-secondary pt-3 mt-4" style="border-color: #333 !important;">
+            <h6 class="text-uppercase fw-bold mb-2" style="font-size: 0.85rem;">BÁN HÀNG & CSKH</h6>
+            <p class="text-white fw-bold mb-0"><i class="fas fa-phone-alt me-2 text-danger"></i>0818273915</p>
+          </div>
+        </div>
+
+        <!-- Cột 3 -->
+        <div class="col-lg-3 col-md-6 ps-lg-5">
+          <h6 class="text-uppercase fw-bold mb-4 position-relative footer-heading">Dành cho người mua</h6>
+          <ul class="list-unstyled footer-links small mb-0">
+            <li class="mb-3"><a href="/policies/payment"><i class="fas fa-angle-right me-2 text-muted"></i>Thanh
+                toán</a></li>
+            <li class="mb-3"><a href="/policies/shipping"><i class="fas fa-angle-right me-2 text-muted"></i>Vận
+                chuyển</a></li>
+            <li class="mb-3"><a href="/policies/return"><i class="fas fa-angle-right me-2 text-muted"></i>Đổi trả
+                hàng</a></li>
+            <li class="mb-3"><a href="/policies/check-warranty"><i class="fas fa-angle-right me-2 text-muted"></i>Kiểm
+                tra bảo hành</a></li>
+          </ul>
+        </div>
+
+        <!-- Cột 4 -->
+        <div class="col-lg-3 col-md-6">
+          <h6 class="text-uppercase fw-bold mb-4 position-relative footer-heading">Hệ thống 2 Showroom</h6>
+          <ul class="list-unstyled small text-secondary mb-0" style="line-height: 1.8;">
+            <li class="mb-4">
+              <i class="fas fa-map-marker-alt me-2 text-muted"></i> <strong>Showroom 1:</strong> Số 18 Trần Bình, phường
+              Mỹ
+              Đình, Hà Nội.
+            </li>
+            <li class="mb-0">
+              <i class="fas fa-map-marker-alt me-2 text-muted"></i> <strong>Showroom 2:</strong> T01 Số 23 Vĩnh Hòa,
+              huyện Vĩnh Bảo, TP. Hải Phòng.
+            </li>
+          </ul>
+        </div>
       </div>
-      <% } %>
     </div>
+    <div class="container mt-5 pt-3 border-top border-secondary text-center" style="border-color: #333 !important;">
+      <p class="mb-0 text-secondary small">© 2025 Nội Thất Đẹp | Hotline: 0818273915</p>
+    </div>
+  </footer>
 
-    <!-- Main Content -->
-    <main><%- body %></main>
+  <!-- Floating Contact Buttons -->
+  <div class="floating-contact">
+    <a href="tel:0818273915" class="contact-btn phone-btn" title="Gọi điện Hotline">
+      <i class="fas fa-phone-alt"></i>
+    </a>
+    <a href="https://zalo.me/0818273915" target="_blank" class="contact-btn zalo-btn" title="Chat Zalo">
+      <span class="zalo-text">Zalo</span>
+    </a>
+    <a href="https://www.facebook.com/?locale=vi_VN" target="_blank" class="contact-btn messenger-btn" title="Chat Messenger">
+      <i class="fab fa-facebook-messenger"></i>
+    </a>
+  </div>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-4 mt-5">
-      <div class="container text-center">
-        <p>© 2025 Nội Thất Đẹp | Hotline: 0123 456 789</p>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/main.js"></script>
+  <script>
+    // Navbar scroll effect for Home page
+    const mainNav = document.getElementById('mainNav');
+    if (mainNav && mainNav.classList.contains('navbar-transparent')) {
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+          mainNav.classList.add('scrolled', 'navbar-light');
+          mainNav.classList.remove('navbar-dark');
+          mainNav.querySelector('.navbar-brand').classList.add('text-dark');
+        } else {
+          mainNav.classList.remove('scrolled', 'navbar-light');
+          mainNav.classList.add('navbar-dark');
+          mainNav.querySelector('.navbar-brand').classList.remove('text-dark');
+        }
+      });
+    }
+  </script>
+  <% if (currentUser && !isStaff && !isAdmin) { %>
+    <!-- Customer Chat Widget -->
+    <div id="customerChatWidget" class="chat-widget d-none">
+      <div class="chat-widget-header bg-primary text-white d-flex justify-content-between align-items-center p-3 rounded-top">
+        <h6 class="mb-0"><i class="fas fa-headset me-2"></i> Hỗ trợ trực tuyến</h6>
+        <button class="btn-close btn-close-white" onclick="toggleChatWidget()"></button>
       </div>
-    </footer>
+      <div class="chat-widget-body bg-light p-3 overflow-auto" id="customerChatBox">
+      </div>
+      <div class="chat-widget-footer p-2 bg-white border-top rounded-bottom">
+        <form id="customerChatForm" class="d-flex gap-2">
+          <input type="text" id="customerChatInput" class="form-control rounded-pill px-3" placeholder="Nhập tin nhắn..." autocomplete="off" required>
+          <button type="submit" class="btn btn-primary rounded-circle" style="min-width: 40px; height: 40px;"><i class="fas fa-paper-plane"></i></button>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Live Chat Button -->
+    <button class="btn btn-primary rounded-circle shadow-lg chat-toggle-btn text-white border-0" onclick="toggleChatWidget()" title="Chat với nhân viên">
+      <i class="fas fa-comments fs-4"></i>
+    </button>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      const currentUser = <%- JSON.stringify(currentUser) %>;
+      let isChatLoaded = false;
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/main.js"></script>
-  </body>
+      socket.emit("join", currentUser.id);
+
+      socket.on("receive_message", (msg) => {
+        appendCustomerMessage(msg);
+        scrollCustomerChat();
+        if(document.getElementById('customerChatWidget').classList.contains('d-none')) {
+          document.querySelector('.chat-toggle-btn').classList.add('bg-danger');
+          document.querySelector('.chat-toggle-btn').classList.remove('btn-primary');
+        }
+      });
+
+      async function toggleChatWidget() {
+        const widget = document.getElementById('customerChatWidget');
+        const btn = document.querySelector('.chat-toggle-btn');
+        btn.classList.add('btn-primary');
+        btn.classList.remove('bg-danger');
+
+        if(widget.classList.contains('d-none')) {
+          widget.classList.remove('d-none');
+          if(!isChatLoaded) {
+            const res = await fetch(`/chat/messages/${currentUser.id}`);
+            const data = await res.json();
+            if(data.success) {
+              const box = document.getElementById('customerChatBox');
+              box.innerHTML = '';
+              data.messages.forEach(msg => appendCustomerMessage(msg));
+              scrollCustomerChat();
+            }
+            isChatLoaded = true;
+          }
+        } else {
+          widget.classList.add('d-none');
+        }
+      }
+
+      document.getElementById('customerChatForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const content = document.getElementById('customerChatInput').value.trim();
+        if(!content) return;
+
+        socket.emit("send_message", {
+          room: currentUser.id,
+          sender: currentUser.id,
+          content: content
+        });
+        document.getElementById('customerChatInput').value = '';
+      });
+
+      function appendCustomerMessage(msg) {
+        const isMe = msg.sender._id === currentUser.id;
+        const box = document.getElementById('customerChatBox');
+        const div = document.createElement('div');
+        div.className = `d-flex flex-column mb-2 ${isMe ? 'align-items-end' : 'align-items-start'}`;
+        div.innerHTML = `
+          <div class="px-3 py-2 rounded-3 shadow-sm ${isMe ? 'bg-primary text-white' : 'bg-white border'}" style="max-width: 85%; font-size: 0.9rem;">
+            ${msg.content}
+          </div>
+        `;
+        box.appendChild(div);
+      }
+
+      function scrollCustomerChat() {
+        const box = document.getElementById('customerChatBox');
+        box.scrollTop = box.scrollHeight;
+      }
+    </script>
+  <% } %>
+</body>
+
 </html>

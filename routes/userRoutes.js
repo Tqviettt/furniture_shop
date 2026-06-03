@@ -3,12 +3,18 @@ const router = express.Router();
 const UserController = require("../controllers/UserController");
 const auth = require("../middleware/authMiddleware");
 
-// Public
+// Auth routes
 router.get("/register", UserController.showRegister);
 router.post("/register", UserController.register);
 router.get("/login", UserController.showLogin);
 router.post("/login", UserController.login);
 router.post("/logout", UserController.logout);
+
+// Forgot Password routes
+router.get("/forgot-password", UserController.showForgotPassword);
+router.post("/forgot-password", UserController.processForgotPassword);
+router.get("/reset-password/:token", UserController.showResetPassword);
+router.post("/reset-password/:token", UserController.processResetPassword);
 
 // Customer
 router.get("/profile", auth.isAuthenticated, UserController.profile);

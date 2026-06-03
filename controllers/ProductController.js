@@ -88,7 +88,7 @@ class ProductController extends BaseController {
       const OrderModel = require("../models/Order");
       const orders = await OrderModel.getByUser(req.session.userId);
       canReview = orders.some(o =>
-        o.items.some(i => i.product?.toString() === req.params.id) &&
+        o.items.some(i => (i.product?._id || i.product)?.toString() === req.params.id) &&
         o.orderStatus === "delivered"
       );
       hasReviewed = await ReviewModel.hasUserReviewed(req.params.id, req.session.userId);

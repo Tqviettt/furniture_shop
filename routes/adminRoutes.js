@@ -4,6 +4,8 @@ const auth = require("../middleware/authMiddleware");
 const ProductController = require("../controllers/ProductController");
 const OrderController = require("../controllers/OrderController");
 const UserController = require("../controllers/UserController");
+const NewsController = require("../controllers/NewsController");
+const ReviewController = require("../controllers/ReviewController");
 const ProductModel = require("../models/Product");
 const multer = require("multer");
 
@@ -83,5 +85,17 @@ router.get("/users/create-staff", auth.isAdmin, UserController.createStaff);
 router.post("/users/create-staff", auth.isAdmin, UserController.storeStaff);
 router.put("/users/:id/toggle", auth.isAdmin, UserController.toggleActive);
 router.put("/users/:id/role", auth.isAdmin, UserController.changeRole);
+
+// Đánh giá
+router.get("/reviews", auth.isAdmin, ReviewController.adminIndex);
+router.delete("/reviews/:id", auth.isAdmin, ReviewController.adminDestroy);
+
+// Tin tức
+router.get("/news", auth.isAdmin, NewsController.adminIndex);
+router.get("/news/create", auth.isAdmin, NewsController.create);
+router.post("/news", auth.isAdmin, upload.single("image"), NewsController.store);
+router.get("/news/:id/edit", auth.isAdmin, NewsController.edit);
+router.put("/news/:id", auth.isAdmin, upload.single("image"), NewsController.update);
+router.delete("/news/:id", auth.isAdmin, NewsController.destroy);
 
 module.exports = router;

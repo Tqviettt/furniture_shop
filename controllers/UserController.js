@@ -17,6 +17,11 @@ class UserController extends BaseController {
     this.storeStaff = this.storeStaff.bind(this);
     this.toggleActive = this.toggleActive.bind(this);
     this.changeRole = this.changeRole.bind(this);
+
+    this.showForgotPassword = this.showForgotPassword.bind(this);
+    this.processForgotPassword = this.processForgotPassword.bind(this);
+    this.showResetPassword = this.showResetPassword.bind(this);
+    this.processResetPassword = this.processResetPassword.bind(this);
   }
 
   showRegister(req, res) {
@@ -168,6 +173,90 @@ class UserController extends BaseController {
       this.redirect(res, "/admin/users", "Đã cập nhật vai trò!");
     } catch (error) {
       this.handleError(res, error, "/admin/users");
+    }
+  }
+
+  // Quên mật khẩu - Hiển thị form
+  showForgotPassword(req, res) {
+    this.render(res, "auth/forgot-password", { title: "Quên mật khẩu" });
+  }
+
+  // Quên mật khẩu - Xử lý gửi email
+  async processForgotPassword(req, res) {
+    try {
+      const crypto = require("crypto");
+      const sendEmail = require("../utils/mailer");
+      const user = await UserModel.findByEmail(req.body.email);
+      if (!user) {
+        req.flash("error", "Email không tồn tại trong hệ thống.");
+        return res.redirect("/forgot-password");
+      }
+
+      // Sinh token
+      const token = crypto.randomBytes(32).toString("hex");
+      user.resetPasswordToken = token;
+      user.resetPasswordExpires = Date.now() + 3600000; // 1 giờ
+      await user.save();
+
+      // Tạo link khôi phục
+      const resetUrl = `${req.protocol}://${req.get("host")}/reset-password/${token}`;
+      const message = `Bạn nhận được email này vì bạn (hoặc ai đó) đã yêu cầu khôi phục mật khẩu.\n\nVui lòng click vào đường link sau để đặt lại mật khẩu của bạn:\n\n${resetUrl}\n\nNếu bạn không yêu cầu, vui lòng bỏ qua email này.`;
+
+      await sendEmail({
+        email: user.email,
+        subject: "Khôi phục mật khẩu - Nội Thất Đẹp",
+        message
+      });
+
+      this.redirect(res, "/login", `Thành công! [DÀNH CHO TEST] Bạn hãy copy đường link sau dán vào trình duyệt để đổi mật khẩu: ${resetUrl}`);
+    } catch (error) {
+      this.handleError(res, error, "/forgot-password");
+    }
+  }
+
+  // Đặt lại mật khẩu - Hiển thị form
+  async showResetPassword(req, res) {
+    try {
+      const user = await UserModel.schema.findOne({
+        resetPasswordToken: req.params.token,
+        resetPasswordExpires: { $gt: Date.now() }
+      });
+      if (!user) {
+        req.flash("error", "Token không hợp lệ hoặc đã hết hạn.");
+        return res.redirect("/forgot-password");
+      }
+      this.render(res, "auth/reset-password", { title: "Đặt lại mật khẩu", token: req.params.token });
+    } catch (error) {
+      this.handleError(res, error, "/forgot-password");
+    }
+  }
+
+  // Đặt lại mật khẩu - Xử lý cập nhật
+  async processResetPassword(req, res) {
+    try {
+      if (req.body.password !== req.body.confirmPassword) {
+        req.flash("error", "Mật khẩu không khớp.");
+        return res.redirect(`/reset-password/${req.params.token}`);
+      }
+
+      const user = await UserModel.schema.findOne({
+        resetPasswordToken: req.params.token,
+        resetPasswordExpires: { $gt: Date.now() }
+      });
+
+      if (!user) {
+        req.flash("error", "Token không hợp lệ hoặc đã hết hạn.");
+        return res.redirect("/forgot-password");
+      }
+
+      user.password = req.body.password;
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpires = undefined;
+      await user.save();
+
+      this.redirect(res, "/login", "Mật khẩu đã được cập nhật! Vui lòng đăng nhập.");
+    } catch (error) {
+      this.handleError(res, error, `/reset-password/${req.params.token}`);
     }
   }
 }

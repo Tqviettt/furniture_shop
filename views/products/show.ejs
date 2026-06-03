@@ -163,6 +163,10 @@
   </div>
   <% } else if (typeof hasReviewed !== 'undefined' && hasReviewed) { %>
   <div class="alert alert-info">Bạn đã đánh giá sản phẩm này rồi!</div>
+  <% } else if (currentUser && !canReview) { %>
+  <div class="alert alert-warning">
+    Bạn cần mua và nhận hàng thành công sản phẩm này để có thể viết đánh giá!
+  </div>
   <% } else if (!currentUser) { %>
   <div class="alert alert-warning">
     <a href="/login">Đăng nhập</a> để đánh giá sản phẩm!

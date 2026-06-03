@@ -8,6 +8,8 @@ class ReviewController extends BaseController {
     super();
     this.store = this.store.bind(this);
     this.destroy = this.destroy.bind(this);
+    this.adminIndex = this.adminIndex.bind(this);
+    this.adminDestroy = this.adminDestroy.bind(this);
   }
 
   async store(req, res) {
@@ -18,7 +20,7 @@ class ReviewController extends BaseController {
       // Kiểm tra đã mua hàng chưa
       const orders = await OrderModel.getByUser(userId);
       const hasBought = orders.some(o =>
-        o.items.some(i => i.product?.toString() === productId) &&
+        o.items.some(i => (i.product?._id || i.product)?.toString() === productId) &&
         o.orderStatus === "delivered"
       );
 
@@ -64,7 +66,50 @@ class ReviewController extends BaseController {
         return res.redirect("/");
       }
       await ReviewModel.delete(req.params.id);
+
+      // Cập nhật rating trung bình sản phẩm sau khi xóa
+      const { avg, count } = await ReviewModel.getAverageRating(review.product);
+      await ProductModel.update(review.product, {
+        rating: Math.round(avg * 10) / 10,
+        reviewCount: count,
+      });
+
       this.redirect(res, `/products/${review.product}`, "Đã xóa đánh giá!");
+    } catch (error) {
+      this.handleError(res, error);
+    }
+  }
+
+  // Admin lấy danh sách đánh giá
+  async adminIndex(req, res) {
+    try {
+      const reviews = await ReviewModel.schema.find()
+        .populate("product", "name images")
+        .populate("user", "name email")
+        .sort({ createdAt: -1 });
+      
+      res.render("admin/reviews/index", {
+        title: "Quản lý đánh giá",
+        reviews
+      });
+    } catch (error) {
+      this.handleError(res, error);
+    }
+  }
+
+  // Admin xóa đánh giá
+  async adminDestroy(req, res) {
+    try {
+      const review = await ReviewModel.getById(req.params.id);
+      if (review) {
+        await ReviewModel.delete(req.params.id);
+        const { avg, count } = await ReviewModel.getAverageRating(review.product);
+        await ProductModel.update(review.product, {
+          rating: Math.round(avg * 10) / 10,
+          reviewCount: count,
+        });
+      }
+      this.redirect(res, "/admin/reviews", "Đã xóa đánh giá!");
     } catch (error) {
       this.handleError(res, error);
     }

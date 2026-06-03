@@ -56,11 +56,11 @@
               onclick="rejectProduct('<%= p._id %>')"> Từ chối</button>
             <% } %>
             <a href="/admin/products/<%= p._id %>/edit"
-              class="btn btn-warning btn-sm"></a>
+              class="btn btn-outline-primary btn-sm">Sửa</a>
             <form action="/admin/products/<%= p._id %>?_method=DELETE"
               method="POST" class="d-inline">
-              <button class="btn btn-danger btn-sm"
-                onclick="return confirm('Xóa sản phẩm?')"></button>
+              <button class="btn btn-outline-danger btn-sm"
+                onclick="return confirm('Xóa sản phẩm?')">Xóa</button>
             </form>
           </td>
         </tr>

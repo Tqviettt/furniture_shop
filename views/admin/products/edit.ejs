@@ -52,8 +52,12 @@
           <img src="<%= img %>" style="width:80px;height:80px;object-fit:cover;" class="rounded" />
           <% }) %>
         </div>
-        <label class="form-label">Thay ảnh mới (để trống nếu không đổi)</label>
-        <input type="file" name="images" class="form-control" multiple accept="image/*" />
+        <label class="form-label">Thay ảnh mới (để trống nếu không đổi, tối đa 3 ảnh)</label>
+        <div class="d-flex flex-column gap-2">
+          <input type="file" name="images" class="form-control" accept="image/*" />
+          <input type="file" name="images" class="form-control" accept="image/*" />
+          <input type="file" name="images" class="form-control" accept="image/*" />
+        </div>
       </div>
 
       <button type="submit" class="btn btn-warning"> Cập Nhật</button>

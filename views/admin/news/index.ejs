@@ -1,0 +1,45 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between mb-3">
+    <h3>Quản lý Tin Tức</h3>
+    <a href="/admin/news/create" class="btn btn-primary">Thêm Bài Viết</a>
+  </div>
+
+  <div class="card p-3 shadow-sm">
+    <table class="table table-hover align-middle">
+      <thead>
+        <tr>
+          <th>Ảnh</th>
+          <th>Tiêu đề</th>
+          <th>Danh mục</th>
+          <th>Ngày tạo</th>
+          <th>Trạng thái</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (newsList.length === 0) { %>
+        <tr><td colspan="6" class="text-center">Chưa có bài viết nào.</td></tr>
+        <% } %>
+        <% newsList.forEach(news => { %>
+        <tr>
+          <td><img src="<%= news.image %>" width="60" class="rounded" /></td>
+          <td><%= news.title %></td>
+          <td><%= news.category %></td>
+          <td><%= new Date(news.createdAt).toLocaleDateString('vi-VN') %></td>
+          <td>
+            <span class="badge <%= news.isActive ? 'bg-success' : 'bg-secondary' %>">
+              <%= news.isActive ? 'Hiển thị' : 'Đã ẩn' %>
+            </span>
+          </td>
+          <td>
+            <a href="/admin/news/<%= news._id %>/edit" class="btn btn-sm btn-outline-primary">Sửa</a>
+            <form action="/admin/news/<%= news._id %>?_method=DELETE" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bài viết này?')">
+              <button class="btn btn-sm btn-outline-danger">Xóa</button>
+            </form>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>

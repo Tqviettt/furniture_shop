@@ -1,4 +1,4 @@
-# Nội Thất Đẹp - E-commerce Furniture Shop
+# AnVietHome - E-commerce Furniture Shop
 
 Một ứng dụng web thương mại điện tử chuyên cung cấp các sản phẩm nội thất, được xây dựng bài bản với **Node.js**, **Express**, **MongoDB** và **EJS**.
 

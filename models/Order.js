@@ -80,6 +80,76 @@ class OrderModel extends BaseModel {
     ]);
     return result[0]?.total || 0;
   }
+
+  async getRevenueLast7Days() {
+    const dates = [...Array(7)].map((_, i) => {
+      const d = new Date();
+      d.setUTCHours(0,0,0,0);
+      d.setDate(d.getDate() - i);
+      return d;
+    }).reverse();
+
+    const result = await this.schema.aggregate([
+      { 
+        $match: { 
+          orderStatus: "delivered",
+          createdAt: { $gte: dates[0] }
+        } 
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          total: { $sum: "$total" }
+        }
+      }
+    ]);
+
+    const stats = dates.map(date => {
+      const dateString = date.toISOString().split('T')[0];
+      const match = result.find(r => r._id === dateString);
+      return {
+        date: dateString,
+        revenue: match ? match.total : 0
+      };
+    });
+    return stats;
+  }
+
+  async getOrderStatusStats() {
+    return await this.schema.aggregate([
+      {
+        $group: {
+          _id: "$orderStatus",
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+  }
+
+  async getRecentOrders(limit = 5) {
+    return await this.schema.find()
+      .populate("user", "name")
+      .sort({ createdAt: -1 })
+      .limit(limit);
+  }
+
+  async getTopSellingProducts(limit = 5) {
+    return await this.schema.aggregate([
+      { $match: { orderStatus: { $ne: "cancelled" } } },
+      { $unwind: "$items" },
+      {
+        $group: {
+          _id: "$items.product",
+          name: { $first: "$items.name" },
+          totalQuantity: { $sum: "$items.quantity" },
+          totalRevenue: { $sum: { $multiply: ["$items.price", "$items.quantity"] } },
+          image: { $first: "$items.image" }
+        }
+      },
+      { $sort: { totalQuantity: -1 } },
+      { $limit: limit }
+    ]);
+  }
 }
 
 module.exports = new OrderModel();

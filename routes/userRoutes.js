@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const UserController = require("../controllers/UserController");
 const auth = require("../middleware/authMiddleware");
+const upload = require("../middleware/uploadMiddleware");
 
 // Auth routes
 router.get("/register", UserController.showRegister);
@@ -9,6 +10,26 @@ router.post("/register", UserController.register);
 router.get("/login", UserController.showLogin);
 router.post("/login", UserController.login);
 router.post("/logout", UserController.logout);
+
+const passport = require("passport");
+
+// Google Auth
+router.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+router.get("/auth/google/callback", passport.authenticate("google", { failureRedirect: "/login" }), (req, res) => {
+  req.session.userId = req.user._id;
+  req.session.userRole = req.user.role;
+  req.session.userName = req.user.name;
+  res.redirect("/");
+});
+
+// Facebook Auth
+router.get("/auth/facebook", passport.authenticate("facebook", { scope: ["email"] }));
+router.get("/auth/facebook/callback", passport.authenticate("facebook", { failureRedirect: "/login" }), (req, res) => {
+  req.session.userId = req.user._id;
+  req.session.userRole = req.user.role;
+  req.session.userName = req.user.name;
+  res.redirect("/");
+});
 
 // Forgot Password routes
 router.get("/forgot-password", UserController.showForgotPassword);
@@ -18,7 +39,7 @@ router.post("/reset-password/:token", UserController.processResetPassword);
 
 // Customer
 router.get("/profile", auth.isAuthenticated, UserController.profile);
-router.put("/profile", auth.isAuthenticated, UserController.updateProfile);
+router.put("/profile", auth.isAuthenticated, upload.single("avatar"), UserController.updateProfile);
 
 // Admin quản lý users
 router.get("/admin/users", auth.isAdmin, UserController.adminUsers);

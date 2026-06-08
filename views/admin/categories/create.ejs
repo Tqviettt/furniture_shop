@@ -1,0 +1,52 @@
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white">
+          <h4 class="mb-0">Thêm Danh Mục Mới</h4>
+        </div>
+        <div class="card-body">
+          <form action="/admin/categories" method="POST">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Tên Danh Mục</label>
+              <input type="text" name="name" id="nameInput" class="form-control" placeholder="VD: Sofa Cao Cấp" required onkeyup="generateSlug()" />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Đường dẫn tĩnh (Slug)</label>
+              <input type="text" name="slug" id="slugInput" class="form-control" placeholder="vd: sofa-cao-cap" required />
+              <small class="text-muted">Slug được tạo tự động nhưng bạn có thể chỉnh sửa.</small>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Mô tả (Tùy chọn)</label>
+              <textarea name="description" class="form-control" rows="3" placeholder="Nhập mô tả danh mục..."></textarea>
+            </div>
+
+            <div class="mb-3 form-check form-switch mt-4">
+              <input class="form-check-input" type="checkbox" name="isActive" id="isActive" checked>
+              <label class="form-check-label fw-bold" for="isActive">Hiển thị danh mục này</label>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+              <a href="/admin/categories" class="btn btn-secondary">Hủy</a>
+              <button type="submit" class="btn btn-primary">Lưu danh mục</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function removeAccents(str) {
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
+}
+
+function generateSlug() {
+  let title = document.getElementById('nameInput').value;
+  let slug = removeAccents(title).toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
+  document.getElementById('slugInput').value = slug;
+}
+</script>

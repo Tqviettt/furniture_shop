@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>
-    <%= title %> | Nội Thất Đẹp
+    <%= title %> | AnVietHome
   </title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -19,9 +19,9 @@
 
   <!-- Navbar -->
   <nav id="mainNav"
-    class="navbar navbar-expand-lg <%= title === 'Nội Thất Đẹp - Trang Chủ' ? 'navbar-transparent navbar-dark' : 'navbar-light bg-white border-bottom' %> py-3">
+    class="navbar navbar-expand-lg <%= title === 'AnVietHome - Trang Chủ' ? 'navbar-transparent navbar-dark' : 'navbar-light bg-white border-bottom position-relative' %> py-3" style="z-index: 1050;">
     <div class="container">
-      <a class="navbar-brand fw-bold fs-4 serif" href="/"> Nội Thất Đẹp</a>
+      <a class="navbar-brand fw-bold fs-4 serif" href="/"> AnVietHome</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -32,16 +32,23 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Sản phẩm</a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="/products/category/sofa">Sofa</a></li>
-              <li><a class="dropdown-item" href="/products/category/ban">Bàn</a></li>
-              <li><a class="dropdown-item" href="/products/category/ghe">Ghế</a></li>
-              <li><a class="dropdown-item" href="/products/category/giuong">Giường</a></li>
-              <li><a class="dropdown-item" href="/products/category/tu">Tủ</a></li>
+              <% if (typeof globalCategories !== 'undefined' && globalCategories.length > 0) { %>
+                <% globalCategories.forEach(cat => { %>
+                  <li><a class="dropdown-item" href="/products/category/<%= cat.slug %>"><%= cat.name %></a></li>
+                <% }) %>
+              <% } else { %>
+                <li><a class="dropdown-item" href="/products/category/sofa">Sofa</a></li>
+                <li><a class="dropdown-item" href="/products/category/ban">Bàn</a></li>
+                <li><a class="dropdown-item" href="/products/category/ghe">Ghế</a></li>
+                <li><a class="dropdown-item" href="/products/category/giuong">Giường</a></li>
+                <li><a class="dropdown-item" href="/products/category/tu">Tủ</a></li>
+              <% } %>
             </ul>
           </li>
           <li class="nav-item"><a class="nav-link" href="/news">Tin tức</a></li>
           <li class="nav-item"><a class="nav-link" href="/about">Giới thiệu</a></li>
           <li class="nav-item"><a class="nav-link" href="/contact">Liên hệ</a></li>
+          <li class="nav-item"><a class="nav-link" href="/wishlist">Yêu thích</a></li>
         </ul>
 
         <!-- Search -->
@@ -66,7 +73,8 @@
 
           <% if (currentUser) { %>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+              <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" data-bs-toggle="dropdown">
+                <img src="<%= currentUser.avatar %>" alt="Avatar" class="rounded-circle object-fit-cover" style="width: 28px; height: 28px;">
                 <% if (isAdmin) { %>
                   <% } else if (isStaff) { %>
                     <% } else { %>
@@ -79,11 +87,14 @@
                     <h6 class="dropdown-header text-danger">ADMIN</h6>
                   </li>
                   <li><a class="dropdown-item" href="/admin/dashboard"> Dashboard</a></li>
+                  <li><a class="dropdown-item" href="/admin/categories"> Danh mục</a></li>
                   <li><a class="dropdown-item" href="/admin/products"> Sản phẩm</a></li>
+                  <li><a class="dropdown-item" href="/admin/inventory"> Kho hàng</a></li>
                   <li><a class="dropdown-item" href="/admin/orders"> Đơn hàng</a></li>
                   <li><a class="dropdown-item" href="/admin/users"> Người dùng</a></li>
                   <li><a class="dropdown-item" href="/admin/news"> Tin tức</a></li>
                   <li><a class="dropdown-item" href="/admin/reviews"> Đánh giá</a></li>
+                  <li><a class="dropdown-item" href="/admin/coupons"> Mã giảm giá</a></li>
                   <li>
                     <hr class="dropdown-divider" />
                   </li>
@@ -126,20 +137,32 @@
   </nav><!-- ← đóng nav -->
 
   <!-- Flash Messages -->
-  <div class="container mt-3">
+  <div class="flash-messages-container position-fixed top-0 end-0 p-3 mt-5" style="z-index: 9999;">
     <% if (successMsg && successMsg.length> 0) { %>
-      <div class="alert alert-success alert-dismissible fade show">
-        <%= successMsg[0] %>
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        <i class="fas fa-check-circle me-2"></i><%= successMsg[0] %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
-      <% } %>
-        <% if (errorMsg && errorMsg.length> 0) { %>
-          <div class="alert alert-danger alert-dismissible fade show">
-            <%= errorMsg[0] %>
-              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-          </div>
-          <% } %>
+    <% } %>
+    <% if (errorMsg && errorMsg.length> 0) { %>
+      <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i><%= errorMsg[0] %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% } %>
   </div>
+  <script>
+    setTimeout(() => {
+      document.querySelectorAll('.flash-messages-container .alert').forEach(alert => {
+        if (typeof bootstrap !== 'undefined') {
+          const bsAlert = new bootstrap.Alert(alert);
+          bsAlert.close();
+        } else {
+          alert.remove();
+        }
+      });
+    }, 3000);
+  </script>
 
   <!-- Main Content -->
   <main><%- body %></main>
@@ -209,7 +232,7 @@
       </div>
     </div>
     <div class="container mt-5 pt-3 border-top border-secondary text-center" style="border-color: #333 !important;">
-      <p class="mb-0 text-secondary small">© 2025 Nội Thất Đẹp | Hotline: 0818273915</p>
+      <p class="mb-0 text-secondary small">© 2025 AnVietHome | Hotline: 0818273915</p>
     </div>
   </footer>
 
@@ -221,7 +244,8 @@
     <a href="https://zalo.me/0818273915" target="_blank" class="contact-btn zalo-btn" title="Chat Zalo">
       <span class="zalo-text">Zalo</span>
     </a>
-    <a href="https://www.facebook.com/?locale=vi_VN" target="_blank" class="contact-btn messenger-btn" title="Chat Messenger">
+    <a href="https://www.facebook.com/?locale=vi_VN" target="_blank" class="contact-btn messenger-btn"
+      title="Chat Messenger">
       <i class="fab fa-facebook-messenger"></i>
     </a>
   </div>
@@ -248,7 +272,8 @@
   <% if (currentUser && !isStaff && !isAdmin) { %>
     <!-- Customer Chat Widget -->
     <div id="customerChatWidget" class="chat-widget d-none">
-      <div class="chat-widget-header bg-primary text-white d-flex justify-content-between align-items-center p-3 rounded-top">
+      <div
+        class="chat-widget-header bg-primary text-white d-flex justify-content-between align-items-center p-3 rounded-top">
         <h6 class="mb-0"><i class="fas fa-headset me-2"></i> Hỗ trợ trực tuyến</h6>
         <button class="btn-close btn-close-white" onclick="toggleChatWidget()"></button>
       </div>
@@ -256,17 +281,20 @@
       </div>
       <div class="chat-widget-footer p-2 bg-white border-top rounded-bottom">
         <form id="customerChatForm" class="d-flex gap-2">
-          <input type="text" id="customerChatInput" class="form-control rounded-pill px-3" placeholder="Nhập tin nhắn..." autocomplete="off" required>
-          <button type="submit" class="btn btn-primary rounded-circle" style="min-width: 40px; height: 40px;"><i class="fas fa-paper-plane"></i></button>
+          <input type="text" id="customerChatInput" class="form-control rounded-pill px-3"
+            placeholder="Nhập tin nhắn..." autocomplete="off" required>
+          <button type="submit" class="btn btn-primary rounded-circle" style="min-width: 40px; height: 40px;"><i
+              class="fas fa-paper-plane"></i></button>
         </form>
       </div>
     </div>
-    
+
     <!-- Live Chat Button -->
-    <button class="btn btn-primary rounded-circle shadow-lg chat-toggle-btn text-white border-0" onclick="toggleChatWidget()" title="Chat với nhân viên">
+    <button class="btn btn-primary rounded-circle shadow-lg chat-toggle-btn text-white border-0"
+      onclick="toggleChatWidget()" title="Chat với nhân viên">
       <i class="fas fa-comments fs-4"></i>
     </button>
-    
+
     <script src="/socket.io/socket.io.js"></script>
     <script>
       const socket = io();
@@ -278,7 +306,7 @@
       socket.on("receive_message", (msg) => {
         appendCustomerMessage(msg);
         scrollCustomerChat();
-        if(document.getElementById('customerChatWidget').classList.contains('d-none')) {
+        if (document.getElementById('customerChatWidget').classList.contains('d-none')) {
           document.querySelector('.chat-toggle-btn').classList.add('bg-danger');
           document.querySelector('.chat-toggle-btn').classList.remove('btn-primary');
         }
@@ -290,12 +318,12 @@
         btn.classList.add('btn-primary');
         btn.classList.remove('bg-danger');
 
-        if(widget.classList.contains('d-none')) {
+        if (widget.classList.contains('d-none')) {
           widget.classList.remove('d-none');
-          if(!isChatLoaded) {
+          if (!isChatLoaded) {
             const res = await fetch(`/chat/messages/${currentUser.id}`);
             const data = await res.json();
-            if(data.success) {
+            if (data.success) {
               const box = document.getElementById('customerChatBox');
               box.innerHTML = '';
               data.messages.forEach(msg => appendCustomerMessage(msg));
@@ -311,7 +339,7 @@
       document.getElementById('customerChatForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const content = document.getElementById('customerChatInput').value.trim();
-        if(!content) return;
+        if (!content) return;
 
         socket.emit("send_message", {
           room: currentUser.id,
@@ -325,9 +353,17 @@
         const isMe = msg.sender._id === currentUser.id;
         const box = document.getElementById('customerChatBox');
         const div = document.createElement('div');
-        div.className = `d-flex flex-column mb-2 ${isMe ? 'align-items-end' : 'align-items-start'}`;
+        div.className = `d-flex mb-2 ${isMe ? 'justify-content-end' : 'justify-content-start'}`;
+        
+        let avatarHtml = '';
+        if (!isMe) {
+          const avatarUrl = msg.sender.avatar || '/images/default-avatar.svg';
+          avatarHtml = `<img src="${avatarUrl}" class="rounded-circle me-2 object-fit-cover" style="width: 28px; height: 28px; align-self: flex-end;">`;
+        }
+
         div.innerHTML = `
-          <div class="px-3 py-2 rounded-3 shadow-sm ${isMe ? 'bg-primary text-white' : 'bg-white border'}" style="max-width: 85%; font-size: 0.9rem;">
+          ${avatarHtml}
+          <div class="px-3 py-2 rounded-3 shadow-sm ${isMe ? 'bg-primary text-white' : 'bg-white border'}" style="max-width: 80%; font-size: 0.9rem;">
             ${msg.content}
           </div>
         `;
@@ -339,7 +375,7 @@
         box.scrollTop = box.scrollHeight;
       }
     </script>
-  <% } %>
+    <% } %>
 </body>
 
 </html>

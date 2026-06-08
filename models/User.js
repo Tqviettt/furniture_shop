@@ -6,7 +6,13 @@ const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true },
-    password: { type: String, required: true, minlength: 6 },
+    password: { 
+      type: String, 
+      required: function() { return !this.googleId && !this.facebookId; }, 
+      minlength: 6 
+    },
+    googleId: { type: String, sparse: true },
+    facebookId: { type: String, sparse: true },
     phone: { type: String, default: "" },
     address: {
       street: String,
@@ -19,7 +25,7 @@ const userSchema = new mongoose.Schema(
       default: "customer" 
     },
     isActive: { type: Boolean, default: true },
-    avatar: { type: String, default: "/images/default-avatar.png" },
+    avatar: { type: String, default: "/images/default-avatar.svg" },
     resetPasswordToken: String,
     resetPasswordExpires: Date,
   },

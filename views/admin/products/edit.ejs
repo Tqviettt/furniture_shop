@@ -15,7 +15,7 @@
           <label class="form-label">Danh mục *</label>
           <select name="category" class="form-select">
             <% categories.forEach(cat => { %>
-            <option value="<%= cat %>" <%= product.category === cat ? 'selected' : '' %>><%= cat %></option>
+            <option value="<%= cat.slug %>" <%= product.category === cat.slug ? 'selected' : '' %>><%= cat.name %></option>
             <% }) %>
           </select>
         </div>

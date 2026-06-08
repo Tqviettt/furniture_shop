@@ -25,11 +25,24 @@ class ProductController extends BaseController {
       const maxPrice = req.query.maxPrice || null;
       const material = req.query.material || null;
       const sort = req.query.sort || "newest";
+      const q = req.query.q || "";
 
       // Xây dựng filter
       const filter = { isActive: true, approvalStatus: "approved" };
+      if (q) filter.$text = { $search: q };
       if (category) filter.category = category;
-      if (material) filter.material = material;
+      if (material) {
+        let regexStr = "";
+        switch(material) {
+          case "go": regexStr = "gỗ"; break;
+          case "vai": regexStr = "vải|nỉ"; break;
+          case "da": regexStr = "da"; break;
+          case "sat": regexStr = "sắt|kim loại"; break;
+          case "nhua": regexStr = "nhựa"; break;
+          default: regexStr = material;
+        }
+        filter.material = { $regex: regexStr, $options: "i" };
+      }
       if (minPrice || maxPrice) {
         filter.price = {};
         if (minPrice) filter.price.$gte = parseInt(minPrice);
@@ -62,6 +75,7 @@ class ProductController extends BaseController {
         maxPrice,
         material,
         sort,
+        q,
       });
     } catch (error) {
       this.handleError(res, error);
@@ -109,10 +123,12 @@ class ProductController extends BaseController {
 
   // GET /admin/products/create
   async create(req, res) {
+    const CategoryModel = require("../models/Category");
+    const categories = await CategoryModel.getActiveCategories();
     const isStaff = req.session.userRole === "staff";
     this.render(res, "admin/products/create", {
       title: "Thêm sản phẩm",
-      categories: ["sofa", "ban", "ghe", "giuong", "tu", "ke", "khac"],
+      categories,
       formAction: isStaff ? "/staff/products" : "/admin/products",
     });
   }
@@ -192,32 +208,19 @@ class ProductController extends BaseController {
         req.flash("error", "Sản phẩm không tồn tại!");
         return res.redirect("/admin/products");
       }
+      const CategoryModel = require("../models/Category");
+      const categories = await CategoryModel.getActiveCategories();
       this.render(res, "admin/products/edit", {
         title: "Sửa sản phẩm",
         product,
-        categories: ["sofa", "ban", "ghe", "giuong", "tu", "ke", "khac"],
+        categories,
       });
     } catch (error) {
       this.handleError(res, error, "/admin/products");
     }
   }
 
-  // PUT /admin/products/:id
-  async update(req, res) {
-    try {
-      const images = req.files?.length
-        ? req.files.map((f) => `/uploads/${f.filename}`)
-        : undefined;
 
-      const updateData = { ...req.body };
-      if (images) updateData.images = images;
-
-      await ProductModel.update(req.params.id, updateData);
-      this.redirect(res, "/admin/products", "Cập nhật thành công!");
-    } catch (error) {
-      this.handleError(res, error, `/admin/products/${req.params.id}/edit`);
-    }
-  }
 
   // DELETE /admin/products/:id
   async destroy(req, res) {
@@ -231,34 +234,12 @@ class ProductController extends BaseController {
 
   // GET /products/search?q=sofa
   async search(req, res) {
-    try {
-      const keyword = req.query.q || "";
-      const products = keyword
-        ? await ProductModel.searchProducts(keyword)
-        : [];
-
-      this.render(res, "products/search", {
-        title: `Kết quả: "${keyword}"`,
-        products,
-        keyword,
-      });
-    } catch (error) {
-      this.handleError(res, error);
-    }
+    res.redirect(`/products?q=${req.query.q || ""}`);
   }
 
   // GET /products/category/:cat
   async getByCategory(req, res) {
-    try {
-      const products = await ProductModel.getByCategory(req.params.cat);
-      this.render(res, "products/category", {
-        title: `Danh mục: ${req.params.cat}`,
-        products,
-        category: req.params.cat,
-      });
-    } catch (error) {
-      this.handleError(res, error);
-    }
+    res.redirect(`/products?category=${req.params.cat}`);
   }
 }
 

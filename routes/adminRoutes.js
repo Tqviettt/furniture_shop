@@ -6,6 +6,9 @@ const OrderController = require("../controllers/OrderController");
 const UserController = require("../controllers/UserController");
 const NewsController = require("../controllers/NewsController");
 const ReviewController = require("../controllers/ReviewController");
+const CouponController = require("../controllers/CouponController");
+const CategoryController = require("../controllers/CategoryController");
+const InventoryController = require("../controllers/InventoryController");
 const ProductModel = require("../models/Product");
 const multer = require("multer");
 
@@ -20,16 +23,26 @@ router.get("/dashboard", auth.isAdmin, async (req, res) => {
   const UserModel = require("../models/User");
   const OrderModel = require("../models/Order");
 
-  const [totalProducts, totalUsers, totalOrders, revenue] = await Promise.all([
-    ProductModel.count(),
-    UserModel.count(),
-    OrderModel.count(),
+  const [totalProducts, totalUsers, totalOrders, revenue, revenueChart, statusStats, topProducts, recentOrders, lowStockProducts] = await Promise.all([
+    ProductModel.schema.countDocuments(),
+    UserModel.schema.countDocuments(),
+    OrderModel.schema.countDocuments(),
     OrderModel.getRevenue(),
+    OrderModel.getRevenueLast7Days(),
+    OrderModel.getOrderStatusStats(),
+    OrderModel.getTopSellingProducts(5),
+    OrderModel.getRecentOrders(5),
+    ProductModel.schema.find({ stock: { $lte: 5 } }).select("name stock price images").limit(5).lean(),
   ]);
 
   res.render("admin/dashboard", {
     title: "Admin Dashboard",
     stats: { totalProducts, totalUsers, totalOrders, revenue },
+    revenueChart,
+    statusStats,
+    topProducts,
+    recentOrders,
+    lowStockProducts
   });
 });
 
@@ -89,6 +102,27 @@ router.put("/users/:id/role", auth.isAdmin, UserController.changeRole);
 // Đánh giá
 router.get("/reviews", auth.isAdmin, ReviewController.adminIndex);
 router.delete("/reviews/:id", auth.isAdmin, ReviewController.adminDestroy);
+
+// Mã giảm giá
+router.get("/coupons", auth.isAdmin, CouponController.adminIndex);
+router.get("/coupons/create", auth.isAdmin, CouponController.create);
+router.post("/coupons", auth.isAdmin, CouponController.store);
+router.get("/coupons/:id/edit", auth.isAdmin, CouponController.edit);
+router.put("/coupons/:id", auth.isAdmin, CouponController.update);
+router.delete("/coupons/:id", auth.isAdmin, CouponController.destroy);
+
+// Danh mục
+router.get("/categories", auth.isAdmin, CategoryController.adminIndex);
+router.get("/categories/create", auth.isAdmin, CategoryController.create);
+router.post("/categories", auth.isAdmin, CategoryController.store);
+router.get("/categories/:id/edit", auth.isAdmin, CategoryController.edit);
+router.put("/categories/:id", auth.isAdmin, CategoryController.update);
+router.delete("/categories/:id", auth.isAdmin, CategoryController.destroy);
+
+// Quản lý kho
+router.get("/inventory", auth.isAdmin, InventoryController.index);
+router.post("/inventory/add", auth.isAdmin, InventoryController.addStock);
+router.get("/inventory/logs", auth.isAdmin, InventoryController.logs);
 
 // Tin tức
 router.get("/news", auth.isAdmin, NewsController.adminIndex);

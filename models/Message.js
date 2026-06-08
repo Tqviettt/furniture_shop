@@ -18,7 +18,7 @@ class MessageModel extends BaseModel {
   async getMessagesByRoom(roomId) {
     return await this.schema
       .find({ room: roomId })
-      .populate("sender", "name role")
+      .populate("sender", "name role avatar")
       .sort({ createdAt: 1 });
   }
 

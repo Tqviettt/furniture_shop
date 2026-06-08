@@ -98,11 +98,20 @@ class App {
       }),
     );
 
+    // Passport
+    const passport = require("./config/passport");
+    this.app.use(passport.initialize());
+    this.app.use(passport.session());
+
     // Flash messages
     this.app.use(flash());
 
     // Set locals cho tất cả views
     this.app.use(auth.setLocals.bind(auth));
+    
+    // Category middleware
+    const categoryMiddleware = require("./middleware/categoryMiddleware");
+    this.app.use(categoryMiddleware);
   }
 
   initRoutes() {
@@ -126,7 +135,7 @@ class App {
         const sale = await ProductModel.getSaleProducts();
         const newsList = await NewsModel.getAllActive(3);
         res.render("home", {
-          title: "Nội Thất Đẹp - Trang Chủ",
+          title: "AnVietHome - Trang Chủ",
           featured,
           sale: sale.slice(0, 4),
           newsList

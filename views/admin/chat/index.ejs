@@ -6,19 +6,29 @@
         <h5 class="mb-0 fw-bold">Tin nhắn khách hàng</h5>
       </div>
       <div class="list-group list-group-flush flex-grow-1 overflow-auto" id="chatRoomList">
-        <% if (chatRooms && chatRooms.length > 0) { %>
-          <% chatRooms.forEach(room => { %>
+        <% if (chatRooms && chatRooms.length> 0) { %>
+          <% chatRooms.forEach(room=> { %>
             <a href="#" class="list-group-item list-group-item-action chat-room-btn" data-room="<%= room._id %>">
               <div class="d-flex w-100 justify-content-between">
-                <h6 class="mb-1 fw-bold"><%= room.customer.name %></h6>
-                <small class="text-muted"><%= new Date(room.lastMessage.createdAt).toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'}) %></small>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <img src="<%= room.customer.avatar || '/images/default-avatar.svg' %>" class="rounded-circle object-fit-cover shadow-sm" style="width: 32px; height: 32px;">
+                  <h6 class="mb-0 fw-bold">
+                    <%= room.customer.name %>
+                  </h6>
+                </div>
+                <small class="text-muted">
+                  <%= new Date(room.lastMessage.createdAt).toLocaleTimeString('vi-VN', {hour: '2-digit' ,
+                    minute:'2-digit'}) %>
+                </small>
               </div>
-              <p class="mb-1 text-truncate text-muted small"><%= room.lastMessage.content %></p>
+              <p class="mb-1 text-truncate text-muted small">
+                <%= room.lastMessage.content %>
+              </p>
             </a>
-          <% }) %>
-        <% } else { %>
-          <div class="p-3 text-center text-muted">Chưa có tin nhắn nào.</div>
-        <% } %>
+            <% }) %>
+              <% } else { %>
+                <div class="p-3 text-center text-muted">Chưa có tin nhắn nào.</div>
+                <% } %>
       </div>
     </div>
 
@@ -32,8 +42,10 @@
       </div>
       <div class="p-3 border-top bg-white d-none" id="chatInputArea">
         <form id="chatForm" class="d-flex gap-2">
-          <input type="text" id="chatInput" class="form-control rounded-pill px-3" placeholder="Nhập tin nhắn..." autocomplete="off" required>
-          <button type="submit" class="btn btn-primary rounded-circle" style="width:45px; height:45px;"><i class="fas fa-paper-plane"></i></button>
+          <input type="text" id="chatInput" class="form-control rounded-pill px-3" placeholder="Nhập tin nhắn..."
+            autocomplete="off" required>
+          <button type="submit" class="btn btn-primary rounded-circle" style="width:45px; height:45px;"><i
+              class="fas fa-paper-plane"></i></button>
         </form>
       </div>
     </div>
@@ -53,6 +65,37 @@
     if (activeRoom && msg.room === activeRoom) {
       appendMessage(msg);
       scrollToBottom();
+    } else {
+      // Tin nhắn từ khách hàng khác -> Cập nhật UI danh sách
+      let roomBtn = document.querySelector(`.chat-room-btn[data-room="${msg.room}"]`);
+      if (roomBtn) {
+        // Cập nhật nội dung tin nhắn cuối
+        const p = roomBtn.querySelector('p');
+        const small = roomBtn.querySelector('small');
+        if (p) p.innerText = msg.content;
+        if (small) small.innerText = new Date(msg.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+
+        // Hiển thị badge số lượng chưa đọc
+        let badge = roomBtn.querySelector('.badge.unread-count');
+        if (!badge) {
+          const headerDiv = roomBtn.querySelector('.justify-content-between');
+          badge = document.createElement('span');
+          badge.className = 'badge bg-danger rounded-pill unread-count';
+          badge.innerText = '1';
+          // Chèn badge bên cạnh thời gian
+          const timeSmall = headerDiv.querySelector('small');
+          headerDiv.insertBefore(badge, timeSmall);
+        } else {
+          badge.innerText = parseInt(badge.innerText) + 1;
+        }
+
+        // Đẩy lên đầu danh sách
+        const list = document.getElementById('chatRoomList');
+        list.prepend(roomBtn);
+      } else {
+        // Khách hàng mới nhắn lần đầu -> Tải lại trang để lấy danh sách mới
+        window.location.reload();
+      }
     }
   });
 
@@ -64,8 +107,12 @@
       btn.classList.add('active', 'bg-primary', 'text-white');
       const p = btn.querySelector('p');
       const small = btn.querySelector('small');
-      if(p) p.classList.remove('text-muted');
-      if(small) small.classList.remove('text-muted');
+      if (p) p.classList.remove('text-muted');
+      if (small) small.classList.remove('text-muted');
+
+      // Xóa thông báo tin nhắn chưa đọc (nếu có)
+      const badge = btn.querySelector('.badge.unread-count');
+      if (badge) badge.remove();
 
       activeRoom = btn.getAttribute('data-room');
       const customerName = btn.querySelector('h6').innerText;
@@ -75,10 +122,10 @@
       // Load tin nhắn
       const res = await fetch(`/chat/messages/${activeRoom}`);
       const data = await res.json();
-      
+
       const chatBox = document.getElementById('chatBox');
       chatBox.innerHTML = '';
-      if(data.success && data.messages.length > 0) {
+      if (data.success && data.messages.length > 0) {
         data.messages.forEach(msg => appendMessage(msg));
       } else {
         chatBox.innerHTML = '<div class="text-center text-muted mt-3">Chưa có tin nhắn.</div>';
@@ -90,7 +137,7 @@
   document.getElementById('chatForm').addEventListener('submit', (e) => {
     e.preventDefault();
     const content = document.getElementById('chatInput').value.trim();
-    if(!content || !activeRoom) return;
+    if (!content || !activeRoom) return;
 
     socket.emit("send_message", {
       room: activeRoom,
@@ -104,21 +151,30 @@
   function appendMessage(msg) {
     const isMe = msg.sender._id === currentUser.id;
     const div = document.createElement('div');
-    div.className = `d-flex flex-column mb-3 ${isMe ? 'align-items-end' : 'align-items-start'}`;
-    
+    div.className = `d-flex mb-3 ${isMe ? 'justify-content-end' : 'justify-content-start'}`;
+
+    let avatarHtml = '';
+    if (!isMe) {
+      const avatarUrl = msg.sender.avatar || '/images/default-avatar.svg';
+      avatarHtml = `<img src="${avatarUrl}" class="rounded-circle me-2 object-fit-cover shadow-sm" style="width: 32px; height: 32px; align-self: flex-end;">`;
+    }
+
     let senderName = '';
     if (!isMe) {
       senderName = `<small class="text-muted mb-1">${msg.sender.name}</small>`;
     }
 
     div.innerHTML = `
-      ${senderName}
-      <div class="px-3 py-2 rounded-3 ${isMe ? 'bg-primary text-white' : 'bg-white border shadow-sm'}" style="max-width: 75%;">
-        ${msg.content}
+      ${avatarHtml}
+      <div class="d-flex flex-column ${isMe ? 'align-items-end' : 'align-items-start'}" style="max-width: 75%;">
+        ${senderName}
+        <div class="px-3 py-2 rounded-3 ${isMe ? 'bg-primary text-white' : 'bg-white border shadow-sm'}">
+          ${msg.content}
+        </div>
+        <small class="text-muted mt-1" style="font-size: 0.7rem;">
+          ${new Date(msg.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
+        </small>
       </div>
-      <small class="text-muted mt-1" style="font-size: 0.7rem;">
-        ${new Date(msg.createdAt).toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'})}
-      </small>
     `;
     document.getElementById('chatBox').appendChild(div);
   }

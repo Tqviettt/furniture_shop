@@ -14,8 +14,8 @@ const productSchema = new mongoose.Schema(
     salePrice: { type: Number, default: 0 },
     category: {
       type: String,
-      enum: ["sofa", "ban", "ghe", "giuong", "tu", "ke", "khac"],
-      default: "khac",
+      required: [true, "Danh mục là bắt buộc"],
+      trim: true
     },
     images: [{ type: String }],
     stock: { type: Number, default: 0, min: 0 },

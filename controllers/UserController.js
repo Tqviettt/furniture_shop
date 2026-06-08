@@ -46,6 +46,7 @@ class UserController extends BaseController {
       req.session.userId = user._id;
       req.session.userName = user.name;
       req.session.userRole = user.role;
+      req.session.userAvatar = user.avatar;
       this.redirect(res, "/", "Đăng ký thành công! Chào mừng bạn 🎉");
     } catch (error) {
       this.handleError(res, error, "/register");
@@ -77,6 +78,7 @@ class UserController extends BaseController {
       req.session.userId = user._id;
       req.session.userName = user.name;
       req.session.userRole = user.role;
+      req.session.userAvatar = user.avatar;
 
       // Redirect theo role
       if (user.role === "admin") return res.redirect("/admin/dashboard");
@@ -104,11 +106,18 @@ class UserController extends BaseController {
   async updateProfile(req, res) {
     try {
       const { name, phone, street, city, district } = req.body;
-      await UserModel.update(req.session.userId, {
+      const updateData = {
         name, phone,
         address: { street, city, district },
-      });
+      };
+      if (req.file) {
+        updateData.avatar = `/uploads/${req.file.filename}`;
+      }
+      await UserModel.update(req.session.userId, updateData);
       req.session.userName = name;
+      if (req.file) {
+        req.session.userAvatar = updateData.avatar;
+      }
       this.redirect(res, "/profile", "Cập nhật hồ sơ thành công!");
     } catch (error) {
       this.handleError(res, error, "/profile");
@@ -204,7 +213,7 @@ class UserController extends BaseController {
 
       await sendEmail({
         email: user.email,
-        subject: "Khôi phục mật khẩu - Nội Thất Đẹp",
+        subject: "Khôi phục mật khẩu - AnVietHome",
         message
       });
 

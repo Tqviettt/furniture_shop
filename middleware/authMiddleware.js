@@ -35,6 +35,7 @@ class AuthMiddleware {
           id: req.session.userId,
           name: req.session.userName,
           role: req.session.userRole,
+          avatar: (req.session.userAvatar && req.session.userAvatar !== '/images/default-avatar.png') ? req.session.userAvatar : "/images/default-avatar.svg",
         }
       : null;
     res.locals.cartCount = (req.session.cart || []).length;

@@ -1,0 +1,55 @@
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between mb-3">
+    <h3> Lịch Sử Nhập/Xuất Kho</h3>
+    <a href="/admin/inventory" class="btn btn-outline-secondary">← Quay lại Kho hàng</a>
+  </div>
+
+  <div class="table-responsive bg-white rounded shadow-sm p-3">
+    <table class="table table-hover align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>Thời gian</th>
+          <th>Sản phẩm</th>
+          <th>Hành động</th>
+          <th>Số lượng</th>
+          <th>Người thực hiện</th>
+          <th>Ghi chú</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (logs && logs.length > 0) { %>
+          <% logs.forEach(log => { %>
+          <tr>
+            <td><%= new Date(log.createdAt).toLocaleString('vi-VN') %></td>
+            <td>
+              <% if (log.product) { %>
+                <div class="fw-bold"><%= log.product.name %></div>
+              <% } else { %>
+                <span class="text-muted">Sản phẩm đã xóa</span>
+              <% } %>
+            </td>
+            <td>
+              <% if (log.action === 'in') { %>
+                <span class="badge bg-success">Nhập kho</span>
+              <% } else if (log.action === 'out') { %>
+                <span class="badge bg-danger">Xuất kho</span>
+              <% } else { %>
+                <span class="badge bg-warning text-dark">Điều chỉnh</span>
+              <% } %>
+            </td>
+            <td class="fw-bold fs-5">
+              <%= log.action === 'in' ? '+' : (log.action === 'out' ? '-' : '') %><%= log.quantity %>
+            </td>
+            <td><%= log.user ? log.user.name : 'Unknown' %></td>
+            <td><%= log.reason || '---' %></td>
+          </tr>
+          <% }) %>
+        <% } else { %>
+          <tr>
+            <td colspan="6" class="text-center py-4">Chưa có lịch sử nào.</td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>

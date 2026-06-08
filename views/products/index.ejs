@@ -16,17 +16,22 @@
           <a href="/products" class="list-group-item list-group-item-action <%= !category ? 'active' : '' %>">
             Tất cả
           </a>
-          <% ['sofa','ban','ghe','giuong','tu','ke','khac'].forEach(cat => { %>
-          <a href="/products?category=<%= cat %>"
-            class="list-group-item list-group-item-action <%= category === cat ? 'active' : '' %>">
-            <%= {sofa:'Sofa',ban:'Bàn',ghe:'Ghế',giuong:'Giường',tu:'Tủ',ke:'Kệ',khac:'Khác'}[cat] %>
-          </a>
-          <% }) %>
+          <% if (typeof globalCategories !== 'undefined') { %>
+            <% globalCategories.forEach(cat => { %>
+            <a href="/products?category=<%= cat.slug %>"
+              class="list-group-item list-group-item-action <%= category === cat.slug ? 'active' : '' %>">
+              <%= cat.name %>
+            </a>
+            <% }) %>
+          <% } %>
         </div>
 
         <!-- Lọc theo giá -->
         <h5> Khoảng giá</h5>
         <form action="/products" method="GET" id="filterForm">
+          <% if (typeof q !== 'undefined' && q) { %>
+            <input type="hidden" name="q" value="<%= q %>" />
+          <% } %>
           <input type="hidden" name="category" value="<%= category || '' %>" />
           <div class="mb-2">
             <label class="form-label small">Giá tối thiểu</label>
@@ -64,19 +69,20 @@
         <!-- Sắp xếp -->
         <select class="form-select w-auto" id="sortSelect"
           onchange="window.location.href=this.value">
-          <option value="/products?<%= category ? 'category='+category+'&' : '' %>sort=newest"
+          <% const baseQuery = `/products?${category ? 'category='+category+'&' : ''}${typeof q !== 'undefined' && q ? 'q='+q+'&' : ''}`; %>
+          <option value="<%= baseQuery %>sort=newest"
             <%= sort === 'newest' ? 'selected' : '' %>>
              Mới nhất
           </option>
-          <option value="/products?<%= category ? 'category='+category+'&' : '' %>sort=price_asc"
+          <option value="<%= baseQuery %>sort=price_asc"
             <%= sort === 'price_asc' ? 'selected' : '' %>>
              Giá tăng dần
           </option>
-          <option value="/products?<%= category ? 'category='+category+'&' : '' %>sort=price_desc"
+          <option value="<%= baseQuery %>sort=price_desc"
             <%= sort === 'price_desc' ? 'selected' : '' %>>
              Giá giảm dần
           </option>
-          <option value="/products?<%= category ? 'category='+category+'&' : '' %>sort=best_seller"
+          <option value="<%= baseQuery %>sort=best_seller"
             <%= sort === 'best_seller' ? 'selected' : '' %>>
              Bán chạy
           </option>
@@ -138,7 +144,8 @@
         <ul class="pagination justify-content-center">
           <% for(let i = 1; i <= totalPages; i++) { %>
           <li class="page-item <%= currentPage === i ? 'active' : '' %>">
-            <a class="page-link" href="?page=<%= i %><%= category ? '&category='+category : '' %>">
+            <% const pageQuery = `?page=${i}${category ? '&category='+category : ''}${typeof q !== 'undefined' && q ? '&q='+q : ''}`; %>
+            <a class="page-link" href="<%= pageQuery %>">
               <%= i %>
             </a>
           </li>

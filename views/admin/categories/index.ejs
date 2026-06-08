@@ -1,0 +1,48 @@
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between mb-3">
+    <h3> Quản Lý Danh Mục</h3>
+    <a href="/admin/categories/create" class="btn btn-primary"> Thêm Danh Mục</a>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>Tên Danh Mục</th>
+          <th>Đường dẫn tĩnh (Slug)</th>
+          <th>Mô tả</th>
+          <th>Trạng thái</th>
+          <th>Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (categories && categories.length > 0) { %>
+          <% categories.forEach(c => { %>
+          <tr>
+            <td class="fw-bold"><%= c.name %></td>
+            <td><code><%= c.slug %></code></td>
+            <td><%= c.description || '---' %></td>
+            <td>
+              <% if (c.isActive) { %>
+                <span class="badge bg-success">Hoạt động</span>
+              <% } else { %>
+                <span class="badge bg-danger">Ẩn</span>
+              <% } %>
+            </td>
+            <td>
+              <a href="/admin/categories/<%= c._id %>/edit" class="btn btn-outline-primary btn-sm">Sửa</a>
+              <form action="/admin/categories/<%= c._id %>?_method=DELETE" method="POST" class="d-inline">
+                <button class="btn btn-outline-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">Xóa</button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+        <% } else { %>
+          <tr>
+            <td colspan="5" class="text-center py-4">Chưa có danh mục nào.</td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>

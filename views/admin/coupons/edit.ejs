@@ -1,0 +1,62 @@
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white">
+          <h4 class="mb-0">Chỉnh sửa Mã Giảm Giá</h4>
+        </div>
+        <div class="card-body">
+          <form action="/admin/coupons/<%= coupon._id %>?_method=PUT" method="POST">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Mã Code</label>
+              <input type="text" name="code" class="form-control text-uppercase" value="<%= coupon.code %>" required />
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Loại giảm giá</label>
+                <select name="discountType" class="form-select">
+                  <option value="percent" <%= coupon.discountType === 'percent' ? 'selected' : '' %>>Phần trăm (%)</option>
+                  <option value="fixed" <%= coupon.discountType === 'fixed' ? 'selected' : '' %>>Tiền mặt (VNĐ)</option>
+                </select>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Giá trị giảm</label>
+                <input type="number" name="discountValue" class="form-control" value="<%= coupon.discountValue %>" min="1" required />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Đơn hàng tối thiểu (VNĐ)</label>
+                <input type="number" name="minOrder" class="form-control" value="<%= coupon.minOrder %>" min="0" />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Lượt sử dụng tối đa</label>
+                <input type="number" name="maxUses" class="form-control" value="<%= coupon.maxUses %>" min="1" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Ngày hết hạn</label>
+                <input type="date" name="expiryDate" class="form-control" value="<%= coupon.expiryDate ? coupon.expiryDate.toISOString().split('T')[0] : '' %>" />
+              </div>
+              <div class="col-md-6 mb-3 d-flex align-items-center">
+                <div class="form-check form-switch mt-4">
+                  <input class="form-check-input" type="checkbox" name="isActive" id="isActive" <%= coupon.isActive ? 'checked' : '' %>>
+                  <label class="form-check-label fw-bold" for="isActive">Kích hoạt mã</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+              <a href="/admin/coupons" class="btn btn-secondary">Hủy</a>
+              <button type="submit" class="btn btn-primary">Cập nhật mã</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

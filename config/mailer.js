@@ -22,13 +22,13 @@ class Mailer {
     `).join("");
 
     const mailOptions = {
-      from: `"Nội Thất Đẹp" <${process.env.EMAIL_USER}>`,
+      from: `"AnVietHome" <${process.env.EMAIL_USER}>`,
       to: userEmail,
       subject: ` Xác nhận đơn hàng #${order._id.toString().slice(-8).toUpperCase()}`,
       html: `
         <div style="font-family:Arial,sans-serif; max-width:600px; margin:auto;">
           <div style="background:#8b5e3c; color:white; padding:20px; text-align:center;">
-            <h1> Nội Thất Đẹp</h1>
+            <h1> AnVietHome</h1>
             <h2>Xác nhận đơn hàng</h2>
           </div>
           <div style="padding:20px;">
@@ -65,7 +65,7 @@ class Mailer {
             <p style="margin-top:20px;">Hotline hỗ trợ: <strong>0123 456 789</strong></p>
           </div>
           <div style="background:#333; color:white; padding:15px; text-align:center;">
-            <p>© 2025 Nội Thất Đẹp</p>
+            <p>© 2025 AnVietHome</p>
           </div>
         </div>
       `,

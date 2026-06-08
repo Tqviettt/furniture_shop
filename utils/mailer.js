@@ -17,7 +17,7 @@ const sendEmail = async (options) => {
     });
 
     const mailOptions = {
-      from: '"Nội Thất Đẹp" <noreply@noithatdep.com>',
+      from: '"AnVietHome" <noreply@anviethome.com>',
       to: options.email,
       subject: options.subject,
       text: options.message,

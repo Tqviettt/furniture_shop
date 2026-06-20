@@ -14,7 +14,6 @@ const productRoutes = require("./routes/productRoutes");
 const userRoutes = require("./routes/userRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const orderRoutes = require("./routes/orderRoutes");
-const staffRoutes = require("./routes/staffRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 // const chatRoutes = require("./routes/chatRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
@@ -56,7 +55,7 @@ class App {
         try {
           const { room, sender, content } = data;
           const msg = await MessageModel.create({ room, sender, content });
-          const populatedMsg = await MessageModel.schema.findById(msg._id).populate("sender", "name role");
+          const populatedMsg = await MessageModel.schema.findById(msg._id).populate("sender", "name role avatar");
           
           this.io.to(room).emit("receive_message", populatedMsg);
           this.io.to("admin_room").emit("receive_message", populatedMsg);
@@ -150,7 +149,6 @@ class App {
     this.app.use("/", userRoutes);
     this.app.use("/cart", cartRoutes);
     this.app.use("/orders", orderRoutes);
-    this.app.use("/staff", staffRoutes);
     this.app.use("/admin", adminRoutes);
     const chatRoutes = require("./routes/chatRoutes");
     this.app.use("/chat", chatRoutes);       

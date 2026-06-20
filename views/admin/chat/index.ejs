@@ -59,7 +59,9 @@
   let activeRoom = null;
 
   // Tham gia phòng của admin để nhận mọi tin nhắn mới
-  socket.emit("join_admin");
+  socket.on("connect", () => {
+    socket.emit("join_admin");
+  });
 
   socket.on("receive_message", (msg) => {
     if (activeRoom && msg.room === activeRoom) {

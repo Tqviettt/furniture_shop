@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Dashboard
-router.get("/dashboard", auth.isAdmin, async (req, res) => {
+router.get("/dashboard", auth.isStaffOrAdmin, async (req, res) => {
   const UserModel = require("../models/User");
   const OrderModel = require("../models/Order");
 
@@ -47,28 +47,28 @@ router.get("/dashboard", auth.isAdmin, async (req, res) => {
 });
 
 // Sản phẩm
-router.get("/products", auth.isAdmin, async (req, res) => {
+router.get("/products", auth.isStaffContent, async (req, res) => {
   const products = await ProductModel.getAll();
   res.render("admin/products/index", { title: "Quản lý sản phẩm", products });
 });
-router.get("/products/create", auth.isAdmin, ProductController.create);
+router.get("/products/create", auth.isStaffContent, ProductController.create);
 router.post(
   "/products",
-  auth.isAdmin,
+  auth.isStaffContent,
   upload.array("images", 5),
   ProductController.store,
 );
-router.get("/products/:id/edit", auth.isAdmin, ProductController.edit);
+router.get("/products/:id/edit", auth.isStaffContent, ProductController.edit);
 router.put(
   "/products/:id",
-  auth.isAdmin,
+  auth.isStaffContent,
   upload.array("images", 5),
   ProductController.update,
 );
-router.delete("/products/:id", auth.isAdmin, ProductController.destroy);
+router.delete("/products/:id", auth.isStaffContent, ProductController.destroy);
 
 // Phê duyệt sản phẩm
-router.put("/products/:id/approve", auth.isAdmin, async (req, res) => {
+router.put("/products/:id/approve", auth.isStaffContent, async (req, res) => {
   await ProductModel.update(req.params.id, {
     approvalStatus: "approved",
     isActive: true,
@@ -78,7 +78,7 @@ router.put("/products/:id/approve", auth.isAdmin, async (req, res) => {
 });
 
 // Từ chối sản phẩm
-router.put("/products/:id/reject", auth.isAdmin, async (req, res) => {
+router.put("/products/:id/reject", auth.isStaffContent, async (req, res) => {
   await ProductModel.update(req.params.id, {
     approvalStatus: "rejected",
     isActive: false,
@@ -88,9 +88,9 @@ router.put("/products/:id/reject", auth.isAdmin, async (req, res) => {
   res.redirect("/admin/products");
 });
 
-// Đơn hàngmkdir public\uploadsmkdir public\uploads
-router.get("/orders", auth.isAdmin, OrderController.adminOrders);
-router.put("/orders/:id/status", auth.isAdmin, OrderController.updateStatus);
+// Đơn hàng
+router.get("/orders", auth.isStaffOrder, OrderController.adminOrders);
+router.put("/orders/:id/status", auth.isStaffOrder, OrderController.updateStatus);
 
 // Người dùng
 router.get("/users", auth.isAdmin, UserController.adminUsers);
@@ -100,8 +100,8 @@ router.put("/users/:id/toggle", auth.isAdmin, UserController.toggleActive);
 router.put("/users/:id/role", auth.isAdmin, UserController.changeRole);
 
 // Đánh giá
-router.get("/reviews", auth.isAdmin, ReviewController.adminIndex);
-router.delete("/reviews/:id", auth.isAdmin, ReviewController.adminDestroy);
+router.get("/reviews", auth.isStaffCSKH, ReviewController.adminIndex);
+router.delete("/reviews/:id", auth.isStaffCSKH, ReviewController.adminDestroy);
 
 // Mã giảm giá
 router.get("/coupons", auth.isAdmin, CouponController.adminIndex);
@@ -112,24 +112,24 @@ router.put("/coupons/:id", auth.isAdmin, CouponController.update);
 router.delete("/coupons/:id", auth.isAdmin, CouponController.destroy);
 
 // Danh mục
-router.get("/categories", auth.isAdmin, CategoryController.adminIndex);
-router.get("/categories/create", auth.isAdmin, CategoryController.create);
-router.post("/categories", auth.isAdmin, CategoryController.store);
-router.get("/categories/:id/edit", auth.isAdmin, CategoryController.edit);
-router.put("/categories/:id", auth.isAdmin, CategoryController.update);
-router.delete("/categories/:id", auth.isAdmin, CategoryController.destroy);
+router.get("/categories", auth.isStaffContent, CategoryController.adminIndex);
+router.get("/categories/create", auth.isStaffContent, CategoryController.create);
+router.post("/categories", auth.isStaffContent, CategoryController.store);
+router.get("/categories/:id/edit", auth.isStaffContent, CategoryController.edit);
+router.put("/categories/:id", auth.isStaffContent, CategoryController.update);
+router.delete("/categories/:id", auth.isStaffContent, CategoryController.destroy);
 
 // Quản lý kho
-router.get("/inventory", auth.isAdmin, InventoryController.index);
-router.post("/inventory/add", auth.isAdmin, InventoryController.addStock);
-router.get("/inventory/logs", auth.isAdmin, InventoryController.logs);
+router.get("/inventory", auth.isStaffContent, InventoryController.index);
+router.post("/inventory/add", auth.isStaffContent, InventoryController.addStock);
+router.get("/inventory/logs", auth.isStaffContent, InventoryController.logs);
 
 // Tin tức
-router.get("/news", auth.isAdmin, NewsController.adminIndex);
-router.get("/news/create", auth.isAdmin, NewsController.create);
-router.post("/news", auth.isAdmin, upload.single("image"), NewsController.store);
-router.get("/news/:id/edit", auth.isAdmin, NewsController.edit);
-router.put("/news/:id", auth.isAdmin, upload.single("image"), NewsController.update);
-router.delete("/news/:id", auth.isAdmin, NewsController.destroy);
+router.get("/news", auth.isStaffContent, NewsController.adminIndex);
+router.get("/news/create", auth.isStaffContent, NewsController.create);
+router.post("/news", auth.isStaffContent, upload.single("image"), NewsController.store);
+router.get("/news/:id/edit", auth.isStaffContent, NewsController.edit);
+router.put("/news/:id", auth.isStaffContent, upload.single("image"), NewsController.update);
+router.delete("/news/:id", auth.isStaffContent, NewsController.destroy);
 
 module.exports = router;

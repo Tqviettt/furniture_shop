@@ -5,9 +5,11 @@
       <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
       <li class="breadcrumb-item"><a href="/products">Sản phẩm</a></li>
       <li class="breadcrumb-item"><a href="/products/category/<%= product.category %>">
-        <%= product.category %>
-      </a></li>
-      <li class="breadcrumb-item active"><%= product.name %></li>
+          <%= product.category %>
+        </a></li>
+      <li class="breadcrumb-item active">
+        <%= product.name %>
+      </li>
     </ol>
   </nav>
 
@@ -16,84 +18,98 @@
     <div class="col-md-6">
       <!-- Ảnh chính có zoom -->
       <div class="main-image-wrapper mb-3">
-        <img id="mainImage"
-          src="<%= product.images[0] || '/images/no-image.png' %>"
-          class="img-fluid rounded shadow main-product-img"
-          alt="<%= product.name %>" />
+        <img id="mainImage" src="<%= product.images[0] || '/images/no-image.png' %>"
+          class="img-fluid rounded shadow main-product-img" alt="<%= product.name %>" />
         <!-- Nút zoom fullscreen -->
         <button class="btn btn-dark btn-sm zoom-btn" onclick="openLightbox(0)">
-           Phóng to
+          Phóng to
         </button>
       </div>
 
       <!-- Thumbnail ảnh -->
-      <% if (product.images.length > 1) { %>
-      <div class="d-flex gap-2 flex-wrap">
-        <% product.images.forEach((img, index) => { %>
-        <img src="<%= img %>"
-          class="thumbnail-img rounded <%= index === 0 ? 'active-thumb' : '' %>"
-          onclick="changeMainImage('<%= img %>', this)"
-          alt="Ảnh <%= index + 1 %>" />
-        <% }) %>
-      </div>
-      <% } %>
+      <% if (product.images.length> 1) { %>
+        <div class="d-flex gap-2 flex-wrap">
+          <% product.images.forEach((img, index)=> { %>
+            <img src="<%= img %>" class="thumbnail-img rounded <%= index === 0 ? 'active-thumb' : '' %>"
+              onclick="changeMainImage('<%= img %>', this)" alt="Ảnh <%= index + 1 %>" />
+            <% }) %>
+        </div>
+        <% } %>
     </div>
 
     <!-- Thông tin sản phẩm -->
     <div class="col-md-6">
-      <h2><%= product.name %></h2>
+      <h2>
+        <%= product.name %>
+      </h2>
       <p class="text-muted">
-        Danh mục: <strong><%= product.category %></strong>
-        <% if (product.material) { %> | Chất liệu: <strong><%= product.material %></strong><% } %>
+        Danh mục: <strong>
+          <%= product.category %>
+        </strong>
+        <% if (product.material) { %> | Chất liệu: <strong>
+            <%= product.material %>
+          </strong>
+          <% } %>
       </p>
 
-      <% if (product.salePrice > 0) { %>
-      <h3 class="text-danger"><%= product.salePrice.toLocaleString('vi-VN') %>đ</h3>
-      <p class="text-muted text-decoration-line-through"><%= product.price.toLocaleString('vi-VN') %>đ</p>
-      <span class="badge bg-danger mb-2">
-        GIẢM <%= Math.round((1 - product.salePrice/product.price)*100) %>%
-      </span>
-      <% } else { %>
-      <h3 class="text-primary"><%= product.price.toLocaleString('vi-VN') %>đ</h3>
-      <% } %>
+      <% if (product.salePrice> 0) { %>
+        <h3 class="text-danger">
+          <%= product.salePrice.toLocaleString('vi-VN') %>đ
+        </h3>
+        <p class="text-muted text-decoration-line-through">
+          <%= product.price.toLocaleString('vi-VN') %>đ
+        </p>
+        <span class="badge bg-danger mb-2">
+          GIẢM <%= Math.round((1 - product.salePrice/product.price)*100) %>%
+        </span>
+        <% } else { %>
+          <h3 class="text-primary">
+            <%= product.price.toLocaleString('vi-VN') %>đ
+          </h3>
+          <% } %>
 
-      <p><%= product.description %></p>
+            <p>
+              <%= product.description %>
+            </p>
 
-      <% if (product.dimensions && product.dimensions.width) { %>
-      <p> Kích thước: 
-        <strong><%= product.dimensions.width %>cm x <%= product.dimensions.depth %>cm x <%= product.dimensions.height %>cm</strong>
-      </p>
-      <% } %>
+            <% if (product.dimensions && product.dimensions.width) { %>
+              <p> Kích thước:
+                <strong>
+                  <%= product.dimensions.width %>cm x <%= product.dimensions.depth %>cm x <%= product.dimensions.height
+                        %>cm
+                </strong>
+              </p>
+              <% } %>
 
-      <p>Còn lại: <strong class="<%= product.stock < 5 ? 'text-danger' : 'text-success' %>">
-        <%= product.stock %> sản phẩm
-      </strong></p>
+                <p>Còn lại: <strong class="<%= product.stock < 5 ? 'text-danger' : 'text-success' %>">
+                    <%= product.stock %> sản phẩm
+                  </strong></p>
 
-      <div class="d-flex align-items-center gap-3 mb-3">
-        <label>Số lượng:</label>
-        <div class="input-group" style="width:130px;">
-          <button class="btn btn-outline-secondary" onclick="changeQty(-1)">−</button>
-          <input type="number" id="quantity" value="1" min="1"
-            max="<%= product.stock %>" class="form-control text-center" />
-          <button class="btn btn-outline-secondary" onclick="changeQty(1)">+</button>
-        </div>
-      </div>
+                <div class="d-flex align-items-center gap-3 mb-3">
+                  <label>Số lượng:</label>
+                  <div class="input-group" style="width:130px;">
+                    <button class="btn btn-outline-secondary" onclick="changeQty(-1)">−</button>
+                    <input type="number" id="quantity" value="1" min="1" max="<%= product.stock %>"
+                      class="form-control text-center" />
+                    <button class="btn btn-outline-secondary" onclick="changeQty(1)">+</button>
+                  </div>
+                </div>
 
-      <% if (currentUser) { %>
-      <button class="btn btn-warning btn-lg add-to-cart" data-id="<%= product._id %>">
-         Thêm vào giỏ
-      </button>
-      <button class="btn btn-primary btn-lg ms-2" id="buyNowBtn" data-id="<%= product._id %>">
-        Mua ngay
-      </button>
-      <button class="btn btn-outline-danger btn-lg ms-2 wishlist-btn"
-      data-id="<%= product._id %>" id="wishlistBtn">
-        Yêu thích
-      </button>
-      <% } else { %>
-      <a href="/login" class="btn btn-warning btn-lg">🛒 Thêm vào giỏ</a>
-      <a href="/login" class="btn btn-primary btn-lg ms-2">Mua ngay</a>
-      <% } %>
+                <% if (currentUser) { %>
+                  <button class="btn btn-warning btn-lg add-to-cart" data-id="<%= product._id %>">
+                    Thêm vào giỏ
+                  </button>
+                  <button class="btn btn-primary btn-lg ms-2" id="buyNowBtn" data-id="<%= product._id %>">
+                    Mua ngay
+                  </button>
+                  <button class="btn btn-outline-danger btn-lg ms-2 wishlist-btn" data-id="<%= product._id %>"
+                    id="wishlistBtn">
+                    Yêu thích
+                  </button>
+                  <% } else { %>
+                    <a href="/login" class="btn btn-warning btn-lg">🛒 Thêm vào giỏ</a>
+                    <a href="/login" class="btn btn-primary btn-lg ms-2">Mua ngay</a>
+                    <% } %>
     </div>
   </div>
 
@@ -109,29 +125,33 @@
   </div>
 
   <!-- Sản phẩm liên quan -->
-  <% if (related.length > 0) { %>
-  <h4 class="mt-5 mb-3">Sản phẩm liên quan</h4>
-  <div class="row g-4">
-    <% related.forEach(p => { %>
-    <div class="col-md-3">
-      <div class="card product-card h-100">
-        <div class="product-img-wrapper">
-          <img src="<%= p.images[0] || '/images/no-image.png' %>"
-            class="card-img-top product-img" alt="<%= p.name %>" />
+  <% if (related.length> 0) { %>
+    <h4 class="mt-5 mb-3">Sản phẩm liên quan</h4>
+    <div class="row g-4">
+      <% related.forEach(p=> { %>
+        <div class="col-md-3">
+          <div class="card product-card h-100">
+            <div class="product-img-wrapper">
+              <img src="<%= p.images[0] || '/images/no-image.png' %>" class="card-img-top product-img"
+                alt="<%= p.name %>" />
+            </div>
+            <div class="card-body">
+              <h6>
+                <%= p.name %>
+              </h6>
+              <p class="text-primary fw-bold">
+                <%= p.price.toLocaleString('vi-VN') %>đ
+              </p>
+              <a href="/products/<%= p._id %>" class="btn btn-outline-primary btn-sm w-100">Xem</a>
+            </div>
+          </div>
         </div>
-        <div class="card-body">
-          <h6><%= p.name %></h6>
-          <p class="text-primary fw-bold"><%= p.price.toLocaleString('vi-VN') %>đ</p>
-          <a href="/products/<%= p._id %>" class="btn btn-outline-primary btn-sm w-100">Xem</a>
-        </div>
-      </div>
+        <% }) %>
     </div>
-    <% }) %>
-  </div>
-  <% } %>
+    <% } %>
 </div>
 
-<!-- Đánh giá sản phẩm -->  ← THÊM TỪ ĐÂY
+<!-- Đánh giá sản phẩm --> ← THÊM TỪ ĐÂY
 <div class="container mt-5">
   <h4> Đánh giá sản phẩm
     <span class="text-warning fs-5">
@@ -139,117 +159,121 @@
     </span>
   </h4>
 
-  <% if (typeof canReview !== 'undefined' && canReview && !hasReviewed) { %>
-  <div class="card p-4 mb-4 shadow-sm">
-    <h5> Viết đánh giá của bạn</h5>
-    <form action="/reviews" method="POST">
-      <input type="hidden" name="productId" value="<%= product._id %>" />
-      <div class="mb-3">
-        <label class="form-label">Đánh giá sao</label>
-        <div class="star-rating">
-          <% for(let i = 5; i >= 1; i--) { %>
-          <input type="radio" name="rating" id="star<%= i %>" value="<%= i %>" required />
-          <label for="star<%= i %>">★</label>
-          <% } %>
+  <% if (typeof canReview !=='undefined' && canReview && !hasReviewed) { %>
+    <div class="card p-4 mb-4 shadow-sm">
+      <h5> Viết đánh giá của bạn</h5>
+      <form action="/reviews" method="POST">
+        <input type="hidden" name="productId" value="<%= product._id %>" />
+        <div class="mb-3">
+          <label class="form-label">Đánh giá sao</label>
+          <div class="star-rating">
+            <% for(let i=5; i>= 1; i--) { %>
+              <input type="radio" name="rating" id="star<%= i %>" value="<%= i %>" required />
+              <label for="star<%= i %>">★</label>
+              <% } %>
+          </div>
         </div>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Nhận xét</label>
-        <textarea name="comment" class="form-control" rows="3"
-          placeholder="Chia sẻ trải nghiệm của bạn..." required></textarea>
-      </div>
-      <button type="submit" class="btn btn-warning">Gửi đánh giá</button>
-    </form>
-  </div>
-  <% } else if (typeof hasReviewed !== 'undefined' && hasReviewed) { %>
-  <div class="alert alert-info">Bạn đã đánh giá sản phẩm này rồi!</div>
-  <% } else if (currentUser && !canReview) { %>
-  <div class="alert alert-warning">
-    Bạn cần mua và nhận hàng thành công sản phẩm này để có thể viết đánh giá!
-  </div>
-  <% } else if (!currentUser) { %>
-  <div class="alert alert-warning">
-    <a href="/login">Đăng nhập</a> để đánh giá sản phẩm!
-  </div>
-  <% } %>
-
-  <% if (typeof reviews !== 'undefined' && reviews.length > 0) { %>
-  <% reviews.forEach(review => { %>
-  <div class="card mb-3 shadow-sm">
-    <div class="card-body">
-      <div class="d-flex justify-content-between">
-        <strong><%= review.userName %></strong>
-        <small class="text-muted">
-          <%= new Date(review.createdAt).toLocaleDateString('vi-VN') %>
-        </small>
-      </div>
-      <div class="text-warning">
-        <% for(let i = 1; i <= 5; i++) { %>
-          <%= i <= review.rating ? '★' : '☆' %>
-        <% } %>
-      </div>
-      <p class="mb-1 mt-2"><%= review.comment %></p>
-      <% if (currentUser && review.user._id.toString() === currentUser.id.toString()) { %>
-      <form action="/reviews/<%= review._id %>?_method=DELETE" method="POST" class="d-inline">
-        <button class="btn btn-sm btn-outline-danger mt-1"
-          onclick="return confirm('Xóa đánh giá?')">Xóa</button>
+        <div class="mb-3">
+          <label class="form-label">Nhận xét</label>
+          <textarea name="comment" class="form-control" rows="3" placeholder="Chia sẻ trải nghiệm của bạn..."
+            required></textarea>
+        </div>
+        <button type="submit" class="btn btn-warning">Gửi đánh giá</button>
       </form>
-      <% } %>
     </div>
-  </div>
-  <% }) %>
-  <% } else { %>
-  <p class="text-muted">Chưa có đánh giá nào!</p>
-  <% } %>
+    <% } else if (typeof hasReviewed !=='undefined' && hasReviewed) { %>
+      <div class="alert alert-info">Bạn đã đánh giá sản phẩm này rồi!</div>
+      <% } else if (currentUser && !canReview) { %>
+        <div class="alert alert-warning">
+          Bạn cần mua và nhận hàng thành công sản phẩm này để có thể viết đánh giá!
+        </div>
+        <% } else if (!currentUser) { %>
+          <div class="alert alert-warning">
+            <a href="/login">Đăng nhập</a> để đánh giá sản phẩm!
+          </div>
+          <% } %>
+
+            <% if (typeof reviews !=='undefined' && reviews.length> 0) { %>
+              <% reviews.forEach(review=> { %>
+                <div class="card mb-3 shadow-sm">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                      <strong>
+                        <%= review.userName %>
+                      </strong>
+                      <small class="text-muted">
+                        <%= new Date(review.createdAt).toLocaleDateString('vi-VN') %>
+                      </small>
+                    </div>
+                    <div class="text-warning">
+                      <% for(let i=1; i <=5; i++) { %>
+                        <%= i <=review.rating ? '★' : '☆' %>
+                          <% } %>
+                    </div>
+                    <p class="mb-1 mt-2">
+                      <%= review.comment %>
+                    </p>
+                    <% if (currentUser && review.user._id.toString()===currentUser.id.toString()) { %>
+                      <form action="/reviews/<%= review._id %>?_method=DELETE" method="POST" class="d-inline">
+                        <button class="btn btn-sm btn-outline-danger mt-1"
+                          onclick="return confirm('Xóa đánh giá?')">Xóa</button>
+                      </form>
+                      <% } %>
+                  </div>
+                </div>
+                <% }) %>
+                  <% } else { %>
+                    <p class="text-muted">Chưa có đánh giá nào!</p>
+                    <% } %>
 </div>
 
 <script>
-// Danh sách ảnh
-const images = [<% product.images.forEach((img, i) => { %>"<%= img %>"<%= i < product.images.length-1 ? ',' : '' %><% }) %>];
-let currentIndex = 0;
+  // Danh sách ảnh
+  const images = [<% product.images.forEach((img, i) => { %> "<%= img %>" <%= i < product.images.length - 1 ? ',' : '' %><% }) %>];
+  let currentIndex = 0;
 
-// Đổi ảnh chính khi click thumbnail
-function changeMainImage(src, el) {
-  document.getElementById("mainImage").src = src;
-  document.querySelectorAll(".thumbnail-img").forEach(t => t.classList.remove("active-thumb"));
-  el.classList.add("active-thumb");
-  currentIndex = images.indexOf(src);
-}
+  // Đổi ảnh chính khi click thumbnail
+  function changeMainImage(src, el) {
+    document.getElementById("mainImage").src = src;
+    document.querySelectorAll(".thumbnail-img").forEach(t => t.classList.remove("active-thumb"));
+    el.classList.add("active-thumb");
+    currentIndex = images.indexOf(src);
+  }
 
-// Tăng giảm số lượng
-function changeQty(delta) {
-  const input = document.getElementById("quantity");
-  const max = parseInt(input.max);
-  let val = parseInt(input.value) + delta;
-  if (val < 1) val = 1;
-  if (val > max) val = max;
-  input.value = val;
-}
+  // Tăng giảm số lượng
+  function changeQty(delta) {
+    const input = document.getElementById("quantity");
+    const max = parseInt(input.max);
+    let val = parseInt(input.value) + delta;
+    if (val < 1) val = 1;
+    if (val > max) val = max;
+    input.value = val;
+  }
 
-// Lightbox
-function openLightbox(index) {
-  currentIndex = index;
-  document.getElementById("lightbox").style.display = "flex";
-  updateLightbox();
-}
+  // Lightbox
+  function openLightbox(index) {
+    currentIndex = index;
+    document.getElementById("lightbox").style.display = "flex";
+    updateLightbox();
+  }
 
-function closeLightbox() {
-  document.getElementById("lightbox").style.display = "none";
-}
+  function closeLightbox() {
+    document.getElementById("lightbox").style.display = "none";
+  }
 
-function prevImage() {
-  currentIndex = (currentIndex - 1 + images.length) % images.length;
-  updateLightbox();
-}
+  function prevImage() {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    updateLightbox();
+  }
 
-function nextImage() {
-  currentIndex = (currentIndex + 1) % images.length;
-  updateLightbox();
-}
+  function nextImage() {
+    currentIndex = (currentIndex + 1) % images.length;
+    updateLightbox();
+  }
 
-function updateLightbox() {
-  document.getElementById("lightboxImg").src = images[currentIndex];
-  document.getElementById("lightboxCounter").textContent =
-    `${currentIndex + 1} / ${images.length}`;
-}
+  function updateLightbox() {
+    document.getElementById("lightboxImg").src = images[currentIndex];
+    document.getElementById("lightboxCounter").textContent =
+      `${currentIndex + 1} / ${images.length}`;
+  }
 </script>

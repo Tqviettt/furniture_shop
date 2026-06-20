@@ -16,9 +16,30 @@ class AuthMiddleware {
   // Admin hoặc Nhân viên
   isStaffOrAdmin(req, res, next) {
     const role = req.session?.userRole;
-    if (role === "admin" || role === "staff") return next();
+    if (role === "admin" || (role && role.startsWith("staff_"))) return next();
     req.flash("error", "Bạn không có quyền truy cập!");
     res.redirect("/");
+  }
+
+  isStaffCSKH(req, res, next) {
+    const role = req.session?.userRole;
+    if (role === "admin" || role === "staff_cskh") return next();
+    req.flash("error", "Chỉ bộ phận CSKH có quyền truy cập!");
+    res.redirect("/admin/dashboard");
+  }
+
+  isStaffOrder(req, res, next) {
+    const role = req.session?.userRole;
+    if (role === "admin" || role === "staff_order") return next();
+    req.flash("error", "Chỉ bộ phận Xử lý đơn hàng có quyền truy cập!");
+    res.redirect("/admin/dashboard");
+  }
+
+  isStaffContent(req, res, next) {
+    const role = req.session?.userRole;
+    if (role === "admin" || role === "staff_content") return next();
+    req.flash("error", "Chỉ bộ phận Nội dung & Kho có quyền truy cập!");
+    res.redirect("/admin/dashboard");
   }
 
   // Chỉ Khách hàng
@@ -42,7 +63,10 @@ class AuthMiddleware {
     res.locals.successMsg = req.flash("success");
     res.locals.errorMsg = req.flash("error");
     res.locals.isAdmin = req.session?.userRole === "admin";
-    res.locals.isStaff = req.session?.userRole === "staff";
+    res.locals.isStaff = req.session?.userRole && req.session.userRole.startsWith("staff_");
+    res.locals.isStaffCSKH = req.session?.userRole === "admin" || req.session?.userRole === "staff_cskh";
+    res.locals.isStaffOrder = req.session?.userRole === "admin" || req.session?.userRole === "staff_order";
+    res.locals.isStaffContent = req.session?.userRole === "admin" || req.session?.userRole === "staff_content";
     res.locals.isCustomer = req.session?.userRole === "customer";
     next();
   }

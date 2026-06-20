@@ -179,16 +179,9 @@ class OrderController extends BaseController {
   async updateStatus(req, res) {
     try {
       await OrderModel.updateStatus(req.params.id, req.body.status);
-
-      // Redirect đúng theo role
-      const redirectUrl =
-        req.session.userRole === "admin" ? "/admin/orders" : "/staff/orders";
-
-      this.redirect(res, redirectUrl, "Cập nhật trạng thái thành công!");
+      this.redirect(res, "/admin/orders", "Cập nhật trạng thái thành công!");
     } catch (error) {
-      const redirectUrl =
-        req.session.userRole === "admin" ? "/admin/orders" : "/staff/orders";
-      this.handleError(res, error, redirectUrl);
+      this.handleError(res, error, "/admin/orders");
     }
   }
 }

@@ -81,8 +81,7 @@ class UserController extends BaseController {
       req.session.userAvatar = user.avatar;
 
       // Redirect theo role
-      if (user.role === "admin") return res.redirect("/admin/dashboard");
-      if (user.role === "staff") return res.redirect("/staff/dashboard");
+      if (user.role === "admin" || (user.role && user.role.startsWith("staff_"))) return res.redirect("/admin/dashboard");
       res.redirect("/");
     } catch (error) {
       this.handleError(res, error, "/login");
@@ -149,13 +148,15 @@ class UserController extends BaseController {
   // ADMIN: Lưu nhân viên mới
   async storeStaff(req, res) {
     try {
-      const { name, email, password } = req.body;
+      const { name, email, password, role } = req.body;
       const existing = await UserModel.findByEmail(email);
       if (existing) {
         req.flash("error", "Email đã tồn tại!");
         return res.redirect("/admin/users/create-staff");
       }
-      await UserModel.create({ name, email, password, role: "staff" });
+      const allowedRoles = ["staff_cskh", "staff_order", "staff_content"];
+      const staffRole = allowedRoles.includes(role) ? role : "staff_cskh";
+      await UserModel.create({ name, email, password, role: staffRole });
       this.redirect(res, "/admin/users", "Tạo tài khoản nhân viên thành công!");
     } catch (error) {
       this.handleError(res, error, "/admin/users/create-staff");

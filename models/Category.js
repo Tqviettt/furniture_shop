@@ -30,14 +30,14 @@ class CategoryModel extends BaseModel {
 
   async getActiveCategories() {
     const categories = await this.getAll({ isActive: true }, { sort: { name: 1 } });
-    
+
     // Đẩy danh mục "Khác" xuống cuối cùng
     const khacIndex = categories.findIndex(c => c.slug === 'khac');
     if (khacIndex > -1) {
       const khacCat = categories.splice(khacIndex, 1)[0];
       categories.push(khacCat);
     }
-    
+
     return categories;
   }
 }

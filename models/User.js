@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema(
     },
     role: { 
       type: String, 
-      enum: ["customer", "staff", "admin"], 
+      enum: ["customer", "staff_cskh", "staff_order", "staff_content", "admin"], 
       default: "customer" 
     },
     isActive: { type: Boolean, default: true },
@@ -62,7 +62,7 @@ class UserModel extends BaseModel {
   }
 
   async getAllStaff() {
-    return await this.getAll({ role: "staff" });
+    return await this.getAll({ role: { $in: ["staff_cskh", "staff_order", "staff_content"] } });
   }
 }
 

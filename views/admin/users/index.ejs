@@ -8,12 +8,17 @@
   <h5 class="text-warning"> Nhân Viên (<%= staffList.length %>)</h5>
   <table class="table table-bordered mb-5">
     <thead class="table-warning">
-      <tr><th>Tên</th><th>Email</th><th>Trạng thái</th><th>Thao tác</th></tr>
+      <tr><th>Tên</th><th>Chức vụ</th><th>Email</th><th>Trạng thái</th><th>Thao tác</th></tr>
     </thead>
     <tbody>
       <% staffList.forEach(u => { %>
       <tr>
         <td><%= u.name %></td>
+        <td>
+          <% if(u.role === 'staff_cskh') { %> <span class="badge bg-info">CSKH</span> <% } %>
+          <% if(u.role === 'staff_order') { %> <span class="badge bg-warning">Đơn hàng</span> <% } %>
+          <% if(u.role === 'staff_content') { %> <span class="badge bg-secondary">Kho & Nội dung</span> <% } %>
+        </td>
         <td><%= u.email %></td>
         <td>
           <span class="badge bg-<%= u.isActive ? 'success' : 'danger' %>">

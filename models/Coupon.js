@@ -36,9 +36,13 @@ class CouponModel extends BaseModel {
     if (orderTotal < coupon.minOrder)
       return { valid: false, message: `Đơn hàng tối thiểu ${coupon.minOrder.toLocaleString('vi-VN')}đ!` };
 
-    const discount = coupon.discountType === "percent"
+    let discount = coupon.discountType === "percent"
       ? Math.round(orderTotal * coupon.discountValue / 100)
       : coupon.discountValue;
+
+    if (discount > orderTotal) {
+      discount = orderTotal;
+    }
 
     return { valid: true, coupon, discount, message: `Giảm ${discount.toLocaleString('vi-VN')}đ!` };
   }

@@ -13,8 +13,11 @@
         <div class="container h-100 d-flex align-items-center">
           <div class="text-white col-md-6">
             <h1 class="display-3 fw-bold serif hero-animate hero-delay-1">Đẳng Cấp Không Gian</h1>
-            <p class="lead text-light hero-animate hero-delay-2">Bộ sưu tập Sofa Minimalism mang đến sự sang trọng và tinh tế tuyệt đối cho phòng khách của bạn.</p>
-            <a href="/products" class="btn btn-light btn-lg mt-3 rounded-pill px-5 text-dark fw-bold hero-animate hero-delay-3">Khám Phá Ngay</a>
+            <p class="lead text-light hero-animate hero-delay-2">Bộ sưu tập Sofa Minimalism mang đến sự sang trọng và
+              tinh tế tuyệt đối cho phòng khách của bạn.</p>
+            <a href="/products"
+              class="btn btn-light btn-lg mt-3 rounded-pill px-5 text-dark fw-bold hero-animate hero-delay-3">Khám Phá
+              Ngay</a>
           </div>
         </div>
       </div>
@@ -26,8 +29,11 @@
         <div class="container h-100 d-flex align-items-center justify-content-end text-end">
           <div class="text-white col-md-6">
             <h1 class="display-3 fw-bold serif hero-animate hero-delay-1">Giấc Ngủ Hoàn Mỹ</h1>
-            <p class="lead text-light hero-animate hero-delay-2">Thiết kế giường ngủ mang đậm nét thiền định, cho bạn những phút giây thư giãn trọn vẹn.</p>
-            <a href="/products/category/giuong" class="btn btn-light btn-lg mt-3 rounded-pill px-5 text-dark fw-bold hero-animate hero-delay-3">Xem Giường</a>
+            <p class="lead text-light hero-animate hero-delay-2">Thiết kế giường ngủ mang đậm nét thiền định, cho bạn
+              những phút giây thư giãn trọn vẹn.</p>
+            <a href="/products/category/giuong"
+              class="btn btn-light btn-lg mt-3 rounded-pill px-5 text-dark fw-bold hero-animate hero-delay-3">Xem
+              Giường</a>
           </div>
         </div>
       </div>
@@ -39,8 +45,11 @@
         <div class="container h-100 d-flex align-items-center">
           <div class="text-white col-md-6">
             <h1 class="display-3 fw-bold serif hero-animate hero-delay-1">Nghệ Thuật Bàn Trà</h1>
-            <p class="lead text-light hero-animate hero-delay-2">Mỗi chiếc bàn là một tác phẩm nghệ thuật, là tâm điểm của sự kết nối.</p>
-            <a href="/products/category/ban" class="btn btn-light btn-lg mt-3 rounded-pill px-5 text-dark fw-bold hero-animate hero-delay-3">Mua Ngay</a>
+            <p class="lead text-light hero-animate hero-delay-2">Mỗi chiếc bàn là một tác phẩm nghệ thuật, là tâm điểm
+              của sự kết nối.</p>
+            <a href="/products/category/ban"
+              class="btn btn-light btn-lg mt-3 rounded-pill px-5 text-dark fw-bold hero-animate hero-delay-3">Mua
+              Ngay</a>
           </div>
         </div>
       </div>
@@ -66,8 +75,8 @@
             <img src="<%= product.images[0] || '/images/no-image.png' %>" class="card-img-top product-img"
               alt="<%= product.name %>" />
             <div class="product-actions">
-              <a href="/products/<%= product._id %>"
-                class="btn btn-light btn-sm flex-fill py-2 text-dark fw-bold">Chi Tiết</a>
+              <a href="/products/<%= product._id %>" class="btn btn-light btn-sm flex-fill py-2 text-dark fw-bold">Chi
+                Tiết</a>
               <button class="btn btn-primary btn-sm py-2 add-to-cart flex-fill fw-bold border-0 text-white"
                 data-id="<%= product._id %>">
                 <i class="fas fa-cart-plus"></i> Thêm Giỏ
@@ -79,7 +88,7 @@
               <%= product.name %>
             </h6>
             <div class="mt-auto">
-              <% if (product.salePrice > 0) { %>
+              <% if (product.salePrice> 0) { %>
                 <span class="text-danger fw-bold" style="color: var(--primary) !important;">
                   <%= product.salePrice.toLocaleString('vi-VN') %>đ
                 </span>
@@ -104,22 +113,26 @@
   <div class="container">
     <div class="row g-4 text-center">
       <div class="col-md-3 col-sm-6 feature-box">
-        <div class="feature-icon-wrapper mb-4"><i class="far fa-gem" style="color: var(--primary); font-size: 2rem;"></i></div>
+        <div class="feature-icon-wrapper mb-4"><i class="far fa-gem"
+            style="color: var(--primary); font-size: 2rem;"></i></div>
         <h5 class="fw-bold serif mb-3">Giao Hàng</h5>
         <p class="text-muted small">Kỹ thuật tự vận chuyển, lắp đặt tận nhà trên toàn quốc.</p>
       </div>
       <div class="col-md-3 col-sm-6 feature-box">
-        <div class="feature-icon-wrapper mb-4"><i class="fas fa-medal" style="color: var(--primary); font-size: 2rem;"></i></div>
+        <div class="feature-icon-wrapper mb-4"><i class="fas fa-medal"
+            style="color: var(--primary); font-size: 2rem;"></i></div>
         <h5 class="fw-bold serif mb-3">Chất Lượng</h5>
         <p class="text-muted small">Thiết kế bắt mắt, mẫu mã đa dạng, vật liệu cao cấp bền bỉ.</p>
       </div>
       <div class="col-md-3 col-sm-6 feature-box">
-        <div class="feature-icon-wrapper mb-4"><i class="fas fa-shield-alt" style="color: var(--primary); font-size: 2rem;"></i></div>
+        <div class="feature-icon-wrapper mb-4"><i class="fas fa-shield-alt"
+            style="color: var(--primary); font-size: 2rem;"></i></div>
         <h5 class="fw-bold serif mb-3">Bảo Hành</h5>
         <p class="text-muted small">Chế độ bảo hành dài hạn, tận tâm, nhanh chóng và kịp thời.</p>
       </div>
       <div class="col-md-3 col-sm-6 feature-box">
-        <div class="feature-icon-wrapper mb-4"><i class="fas fa-headset" style="color: var(--primary); font-size: 2rem;"></i></div>
+        <div class="feature-icon-wrapper mb-4"><i class="fas fa-headset"
+            style="color: var(--primary); font-size: 2rem;"></i></div>
         <h5 class="fw-bold serif mb-3">Tư Vấn</h5>
         <p class="text-muted small">Tư vấn viên chuyên nghiệp, hỗ trợ trực tiếp hoặc qua hotline.</p>
       </div>
@@ -140,8 +153,7 @@
               <a href="/news/<%= news.slug %>" class="text-decoration-none">
                 <div class="position-relative overflow-hidden" style="height: 220px;">
                   <img src="<%= news.image %>" class="w-100 h-100 object-fit-cover hover-zoom" alt="<%= news.title %>">
-                  <div
-                    class="position-absolute top-0 start-0 bg-white m-3 text-center p-2 shadow-sm"
+                  <div class="position-absolute top-0 start-0 bg-white m-3 text-center p-2 shadow-sm"
                     style="min-width: 55px; border-radius: 8px;">
                     <span class="d-block fw-bold fs-5" style="color: var(--primary);">
                       <%= new Date(news.createdAt).getDate() %>

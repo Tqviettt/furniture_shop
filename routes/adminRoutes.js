@@ -4,6 +4,8 @@ const auth = require("../middleware/authMiddleware");
 const ProductController = require("../controllers/ProductController");
 const OrderController = require("../controllers/OrderController");
 const UserController = require("../controllers/UserController");
+const InvoiceController = require("../controllers/InvoiceController");
+const ReportController = require("../controllers/ReportController");
 const NewsController = require("../controllers/NewsController");
 const ReviewController = require("../controllers/ReviewController");
 const CouponController = require("../controllers/CouponController");
@@ -91,6 +93,7 @@ router.put("/products/:id/reject", auth.isStaffContent, async (req, res) => {
 // Đơn hàng
 router.get("/orders", auth.isStaffOrder, OrderController.adminOrders);
 router.put("/orders/:id/status", auth.isStaffOrder, OrderController.updateStatus);
+router.get("/orders/:id/invoice", auth.isStaffOrder, InvoiceController.generateInvoice);
 
 // Người dùng
 router.get("/users", auth.isAdmin, UserController.adminUsers);

@@ -36,12 +36,18 @@ class ReviewController extends BaseController {
         return res.redirect(`/products/${productId}`);
       }
 
+      let images = [];
+      if (req.files && req.files.length > 0) {
+        images = req.files.map((file) => `/uploads/${file.filename}`);
+      }
+
       await ReviewModel.create({
         product: productId,
         user: userId,
         userName: req.session.userName,
         rating: parseInt(rating),
         comment,
+        images,
         orderId,
       });
 

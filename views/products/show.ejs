@@ -162,7 +162,7 @@
   <% if (typeof canReview !=='undefined' && canReview && !hasReviewed) { %>
     <div class="card p-4 mb-4 shadow-sm">
       <h5> Viết đánh giá của bạn</h5>
-      <form action="/reviews" method="POST">
+      <form action="/reviews" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="productId" value="<%= product._id %>" />
         <div class="mb-3">
           <label class="form-label">Đánh giá sao</label>
@@ -177,6 +177,10 @@
           <label class="form-label">Nhận xét</label>
           <textarea name="comment" class="form-control" rows="3" placeholder="Chia sẻ trải nghiệm của bạn..."
             required></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Đính kèm hình ảnh (Tối đa 3 ảnh)</label>
+          <input type="file" name="images" class="form-control" accept="image/*" multiple />
         </div>
         <button type="submit" class="btn btn-warning">Gửi đánh giá</button>
       </form>
@@ -213,18 +217,73 @@
                     <p class="mb-1 mt-2">
                       <%= review.comment %>
                     </p>
-                    <% if (currentUser && review.user._id.toString()===currentUser.id.toString()) { %>
-                      <form action="/reviews/<%= review._id %>?_method=DELETE" method="POST" class="d-inline">
-                        <button class="btn btn-sm btn-outline-danger mt-1"
-                          onclick="return confirm('Xóa đánh giá?')">Xóa</button>
-                      </form>
+                    <% if (review.images && review.images.length> 0) { %>
+                      <div class="mt-2 d-flex gap-2">
+                        <% review.images.forEach(img=> { %>
+                          <img src="<%= img %>" style="width: 80px; height: 80px; object-fit: cover;"
+                            class="rounded border shadow-sm" />
+                          <% }) %>
+                      </div>
                       <% } %>
+                        <% if (currentUser && review.user._id.toString()===currentUser.id.toString()) { %>
+                          <form action="/reviews/<%= review._id %>?_method=DELETE" method="POST" class="d-inline">
+                            <button class="btn btn-sm btn-outline-danger mt-1"
+                              onclick="return confirm('Xóa đánh giá?')">Xóa</button>
+                          </form>
+                          <% } %>
                   </div>
                 </div>
                 <% }) %>
                   <% } else { %>
                     <p class="text-muted">Chưa có đánh giá nào!</p>
                     <% } %>
+</div>
+
+<!-- Sản phẩm liên quan -->
+<div class="container mt-5 mb-5">
+  <h4 class="mb-4">Sản phẩm cùng danh mục</h4>
+  <% if (typeof related !=='undefined' && related.length> 0) { %>
+    <div class="row row-cols-2 row-cols-md-4 g-4">
+      <% related.forEach(relProd=> { %>
+        <div class="col">
+          <div class="card h-100 product-card border-0 shadow-sm">
+            <% if (relProd.salePrice> 0) { %>
+              <div class="position-absolute top-0 end-0 bg-danger text-white px-2 py-1 m-2 rounded-2"
+                style="z-index: 1;">
+                Sale
+              </div>
+              <% } %>
+                <a href="/products/<%= relProd._id %>">
+                  <img src="<%= relProd.images[0] %>" class="card-img-top" alt="<%= relProd.name %>"
+                    style="height: 200px; object-fit: cover;">
+                </a>
+                <div class="card-body text-center">
+                  <h6 class="card-title text-truncate"><a href="/products/<%= relProd._id %>"
+                      class="text-dark text-decoration-none">
+                      <%= relProd.name %>
+                    </a></h6>
+                  <div class="d-flex justify-content-center align-items-center gap-2">
+                    <% if (relProd.salePrice> 0) { %>
+                      <span class="text-danger fw-bold">
+                        <%= relProd.salePrice.toLocaleString('vi-VN') %>đ
+                      </span>
+                      <span class="text-muted text-decoration-line-through small">
+                        <%= relProd.price.toLocaleString('vi-VN') %>đ
+                      </span>
+                      <% } else { %>
+                        <span class="fw-bold">
+                          <%= relProd.price.toLocaleString('vi-VN') %>đ
+                        </span>
+                        <% } %>
+                  </div>
+                </div>
+          </div>
+        </div>
+        <% }) %>
+    </div>
+    <% } else { %>
+      <p class="text-muted">Không có sản phẩm liên quan nào.</p>
+      <% } %>
 </div>
 
 <script>

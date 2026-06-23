@@ -9,6 +9,8 @@ const reviewSchema = new mongoose.Schema({
   comment: { type: String, required: true },
   images: [{ type: String }],
   orderId: { type: mongoose.Schema.Types.ObjectId, ref: "Order" },
+  reply: { type: String },
+  repliedAt: { type: Date },
 }, { timestamps: true });
 
 const ReviewSchema = mongoose.model("Review", reviewSchema);

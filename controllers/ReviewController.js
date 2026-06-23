@@ -120,6 +120,26 @@ class ReviewController extends BaseController {
       this.handleError(res, error);
     }
   }
+  // Admin trả lời đánh giá
+  async reply(req, res) {
+    try {
+      const { reply } = req.body;
+      const reviewId = req.params.id;
+      if (!reply) {
+        req.flash("error", "Nội dung phản hồi không được để trống!");
+        return res.redirect("/admin/reviews");
+      }
+      
+      await ReviewModel.update(reviewId, {
+        reply: reply.trim(),
+        repliedAt: new Date()
+      });
+      
+      this.redirect(res, "/admin/reviews", "Đã gửi phản hồi đánh giá!");
+    } catch (error) {
+      this.handleError(res, error);
+    }
+  }
 }
 
 module.exports = new ReviewController();

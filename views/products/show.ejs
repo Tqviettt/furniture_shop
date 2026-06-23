@@ -225,6 +225,15 @@
                           <% }) %>
                       </div>
                       <% } %>
+                    <% if (review.reply) { %>
+                      <div class="mt-3 p-3 bg-light rounded border-start border-4 border-primary">
+                        <div class="d-flex align-items-center mb-1">
+                          <i class="fas fa-headset text-primary me-2"></i>
+                          <strong class="text-primary">Phản hồi từ Cửa hàng:</strong>
+                        </div>
+                        <p class="mb-0 text-muted"><%= review.reply %></p>
+                      </div>
+                    <% } %>
                         <% if (currentUser && review.user._id.toString()===currentUser.id.toString()) { %>
                           <form action="/reviews/<%= review._id %>?_method=DELETE" method="POST" class="d-inline">
                             <button class="btn btn-sm btn-outline-danger mt-1"

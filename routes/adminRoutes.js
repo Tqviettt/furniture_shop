@@ -137,6 +137,7 @@ router.put("/users/:id/role", auth.isAdmin, UserController.changeRole);
 
 // Đánh giá
 router.get("/reviews", auth.isStaffCSKH, ReviewController.adminIndex);
+router.put("/reviews/:id/reply", auth.isStaffCSKH, ReviewController.reply);
 router.delete("/reviews/:id", auth.isStaffCSKH, ReviewController.adminDestroy);
 
 // Mã giảm giá

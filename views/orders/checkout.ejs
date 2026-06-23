@@ -3,34 +3,41 @@
   <div class="row">
     <!-- Form thông tin -->
     <div class="col-md-7">
+      
+      <!-- Card Địa chỉ nhận hàng -->
+      <div class="card p-4 shadow-sm mb-3 border-0 position-relative" style="border-top: 4px solid var(--primary) !important;">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0 text-primary"><i class="fas fa-map-marker-alt me-2"></i> Địa chỉ nhận hàng</h5>
+          <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addressModal">
+            Thay đổi
+          </button>
+        </div>
+        <% if (currentUser && currentUser.addresses && currentUser.addresses.length > 0) { 
+             const defaultAddr = currentUser.addresses.find(a => a.isDefault) || currentUser.addresses[0];
+        %>
+          <div id="selectedAddressDisplay">
+            <div class="fw-bold mb-1"><span id="dispName"><%= defaultAddr.name %></span> | <span id="dispPhone"><%= defaultAddr.phone %></span></div>
+            <div class="text-muted"><span id="dispStreet"><%= defaultAddr.street %></span>, <span id="dispWard"><%= defaultAddr.ward %></span>, <span id="dispDistrict"><%= defaultAddr.district %></span>, <span id="dispCity"><%= defaultAddr.city %></span></div>
+          </div>
+        <% } else { %>
+          <div id="selectedAddressDisplay" class="text-danger">
+            Bạn chưa có địa chỉ nhận hàng. Vui lòng thêm địa chỉ!
+          </div>
+        <% } %>
+      </div>
+
+      <!-- Form phương thức và ghi chú -->
       <div class="card p-4 shadow-sm">
-        <h5 class="mb-3">Thông tin giao hàng</h5>
-        <form action="/orders" method="POST">
-          <div class="mb-3">
-            <label class="form-label">Họ tên người nhận</label>
-            <input type="text" name="name" class="form-control"
-              value="<%= currentUser?.name || '' %>" required />
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Số điện thoại</label>
-            <input type="text" name="phone" class="form-control" required />
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Địa chỉ</label>
-            <input type="text" name="street" class="form-control" placeholder="Số nhà, tên đường" required />
-          </div>
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Quận/Huyện</label>
-              <input type="text" name="district" class="form-control" />
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Tỉnh/Thành phố</label>
-              <input type="text" name="city" class="form-control" required />
-            </div>
-          </div>
-          <hr />
-          <h5>Phương thức thanh toán</h5>
+        <form action="/orders" method="POST" id="checkoutForm">
+          <% if (currentUser && currentUser.addresses && currentUser.addresses.length > 0) { 
+             const defaultAddr = currentUser.addresses.find(a => a.isDefault) || currentUser.addresses[0];
+          %>
+            <input type="hidden" name="addressId" id="selectedAddressId" value="<%= defaultAddr._id %>" required />
+          <% } else { %>
+            <input type="hidden" name="addressId" id="selectedAddressId" value="" required />
+          <% } %>
+
+          <h5 class="mb-3">Phương thức thanh toán</h5>
           <div class="mb-3">
             <div class="form-check mb-2">
               <input class="form-check-input" type="radio" name="paymentMethod" value="cod" checked />
@@ -45,6 +52,7 @@
               <label class="form-check-label"> Ví MoMo</label>
             </div>
           </div>
+          <hr />
           <div class="mb-3">
             <label class="form-label">Ghi chú</label>
             <textarea name="note" class="form-control" rows="2" placeholder="Ghi chú thêm..."></textarea>
@@ -95,26 +103,247 @@
       </div>
     </div>
   </div>
-  <script>
-async function checkCoupon() {
-  const code = document.getElementById("couponInput").value;
-  if (!code) return;
-  const total = <%= total %>;
-  const res = await fetch("/orders/check-coupon", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ code, total }),
-  });
-  const data = await res.json();
-  const msg = document.getElementById("couponMsg");
-  if (data.valid) {
-    msg.innerHTML = `<span class="text-success fw-bold"> ${data.message}</span>`;
-  } else {
-    msg.innerHTML = `<span class="text-danger"> ${data.message}</span>`;
-    document.getElementById("couponInput").value = "";
-  }
-}
-</script>
 
-</div>
+  <!-- Modal Chọn Địa chỉ -->
+  <div class="modal fade" id="addressModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Địa chỉ của tôi</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="addressList">
+            <% if (currentUser && currentUser.addresses && currentUser.addresses.length > 0) { %>
+              <% currentUser.addresses.forEach(addr => { %>
+                <div class="form-check border p-3 rounded mb-2 address-item">
+                  <input class="form-check-input ms-0 me-2 mt-2" type="radio" name="addressSelection" id="addr_<%= addr._id %>" value="<%= addr._id %>" <%= addr.isDefault ? 'checked' : '' %>
+                    data-name="<%= addr.name %>" data-phone="<%= addr.phone %>" data-street="<%= addr.street %>" data-ward="<%= addr.ward %>" data-district="<%= addr.district %>" data-city="<%= addr.city %>">
+                  <label class="form-check-label w-100" for="addr_<%= addr._id %>">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="fw-bold"><%= addr.name %> | <%= addr.phone %></span>
+                      <% if(addr.isDefault) { %><span class="badge bg-primary">Mặc định</span><% } %>
+                    </div>
+                    <div class="text-muted small mt-1"><%= addr.street %></div>
+                    <div class="text-muted small"><%= addr.ward %>, <%= addr.district %>, <%= addr.city %></div>
+                  </label>
+                </div>
+              <% }) %>
+            <% } else { %>
+              <p class="text-center text-muted">Bạn chưa có địa chỉ nào.</p>
+            <% } %>
+          </div>
+          <button type="button" class="btn btn-outline-secondary w-100 mt-2" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#newAddressModal">
+            <i class="fas fa-plus"></i> Thêm Địa Chỉ Mới
+          </button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="button" class="btn btn-primary" onclick="confirmAddressSelection()">Xác nhận</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Thêm Địa chỉ mới -->
+  <div class="modal fade" id="newAddressModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form id="newAddressForm" onsubmit="submitNewAddress(event)">
+          <div class="modal-header">
+            <h5 class="modal-title">Thêm địa chỉ mới</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <input type="text" name="name" class="form-control" placeholder="Họ và tên" required />
+              </div>
+              <div class="col-md-6 mb-3">
+                <input type="text" name="phone" class="form-control" placeholder="Số điện thoại" required />
+              </div>
+            </div>
+            <div class="mb-3">
+              <input type="text" name="street" class="form-control" placeholder="Số nhà, tên đường" required />
+            </div>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <select class="form-select" id="citySelect" required>
+                  <option value="">Tỉnh/Thành phố</option>
+                </select>
+                <input type="hidden" name="city" id="cityInput" />
+              </div>
+              <div class="col-md-4 mb-3">
+                <select class="form-select" id="districtSelect" required>
+                  <option value="">Quận/Huyện</option>
+                </select>
+                <input type="hidden" name="district" id="districtInput" />
+              </div>
+              <div class="col-md-4 mb-3">
+                <select class="form-select" id="wardSelect" required>
+                  <option value="">Phường/Xã</option>
+                </select>
+                <input type="hidden" name="ward" id="wardInput" />
+              </div>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="isDefault" id="isDefault" checked>
+              <label class="form-check-label" for="isDefault">Đặt làm địa chỉ mặc định</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#addressModal">Trở lại</button>
+            <button type="submit" class="btn btn-primary" id="btnSaveAddress">Hoàn thành</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  async function checkCoupon() {
+    const code = document.getElementById("couponInput").value;
+    if (!code) return;
+    const total = <%= total %>;
+    const res = await fetch("/orders/check-coupon", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code, total }),
+    });
+    const data = await res.json();
+    const msg = document.getElementById("couponMsg");
+    if (data.valid) {
+      msg.innerHTML = `<span class="text-success fw-bold"> ${data.message}</span>`;
+    } else {
+      msg.innerHTML = `<span class="text-danger"> ${data.message}</span>`;
+      document.getElementById("couponInput").value = "";
+    }
+  }
+
+  function confirmAddressSelection() {
+    const selectedRadio = document.querySelector('input[name="addressSelection"]:checked');
+    if (!selectedRadio) {
+      alert("Vui lòng chọn 1 địa chỉ");
+      return;
+    }
+    
+    // Cập nhật giao diện
+    const dispBox = document.getElementById("selectedAddressDisplay");
+    document.getElementById("selectedAddressId").value = selectedRadio.value;
+    
+    dispBox.innerHTML = `
+      <div class="fw-bold mb-1"><span>${selectedRadio.dataset.name}</span> | <span>${selectedRadio.dataset.phone}</span></div>
+      <div class="text-muted"><span>${selectedRadio.dataset.street}</span>, <span>${selectedRadio.dataset.ward}</span>, <span>${selectedRadio.dataset.district}</span>, <span>${selectedRadio.dataset.city}</span></div>
+    `;
+    dispBox.className = "";
+    
+    // Đóng modal
+    const modalEl = document.getElementById('addressModal');
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    modal.hide();
+  }
+
+  async function submitNewAddress(e) {
+    e.preventDefault();
+    const form = e.target;
+    const btn = document.getElementById('btnSaveAddress');
+    btn.disabled = true;
+    btn.innerHTML = 'Đang lưu...';
+
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    
+    try {
+      const res = await fetch('/profile/addresses', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      if(result.success) {
+        window.location.reload(); // Tải lại để lấy list mới cho đơn giản
+      } else {
+        alert(result.message || "Có lỗi xảy ra");
+        btn.disabled = false;
+        btn.innerHTML = 'Hoàn thành';
+      }
+    } catch(err) {
+      alert("Lỗi kết nối");
+      btn.disabled = false;
+      btn.innerHTML = 'Hoàn thành';
+    }
+  }
+
+  // Load địa giới hành chính Việt Nam
+  document.addEventListener("DOMContentLoaded", function() {
+    const citis = document.getElementById("citySelect");
+    const districts = document.getElementById("districtSelect");
+    const wards = document.getElementById("wardSelect");
+    const cityInput = document.getElementById("cityInput");
+    const districtInput = document.getElementById("districtInput");
+    const wardInput = document.getElementById("wardInput");
+
+    fetch("https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json")
+      .then(response => response.json())
+      .then(data => {
+        renderCity(data);
+      })
+      .catch(error => console.error("Error loading provinces:", error));
+
+    function renderCity(data) {
+      for (const x of data) {
+        citis.options[citis.options.length] = new Option(x.Name, x.Id);
+      }
+      
+      citis.onchange = function () {
+        districts.length = 1;
+        wards.length = 1;
+        districtInput.value = "";
+        wardInput.value = "";
+        if (this.value != "") {
+          const result = data.filter(n => n.Id === this.value);
+          for (const k of result[0].Districts) {
+            districts.options[districts.options.length] = new Option(k.Name, k.Id);
+          }
+          cityInput.value = citis.options[citis.selectedIndex].text;
+        }
+      };
+      
+      districts.onchange = function () {
+        wards.length = 1;
+        wardInput.value = "";
+        const dataCity = data.filter(n => n.Id === citis.value);
+        if (this.value != "") {
+          const dataWards = dataCity[0].Districts.filter(n => n.Id === this.value)[0].Wards;
+          for (const w of dataWards) {
+            wards.options[wards.options.length] = new Option(w.Name, w.Id);
+          }
+          districtInput.value = districts.options[districts.selectedIndex].text;
+        }
+      };
+      
+      wards.onchange = function () {
+        if (this.value != "") {
+          wardInput.value = wards.options[wards.selectedIndex].text;
+        }
+      };
+    }
+    
+    // Prevent checkout if no address selected
+    document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+      if(!document.getElementById('selectedAddressId').value) {
+        e.preventDefault();
+        alert('Vui lòng thêm và chọn địa chỉ nhận hàng!');
+        
+        const modal = new bootstrap.Modal(document.getElementById('newAddressModal'));
+        modal.show();
+      }
+    });
+  });
+  </script>
+
 </div>

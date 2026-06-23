@@ -73,39 +73,48 @@ class OrderModel extends BaseModel {
     return await this.update(orderId, { orderStatus: status });
   }
 
-  async getRevenue() {
+  async getRevenue(startDate, endDate) {
+    const matchQuery = { orderStatus: "delivered" };
+    if (startDate && endDate) {
+      matchQuery.createdAt = { $gte: startDate, $lte: endDate };
+    }
     const result = await this.schema.aggregate([
-      { $match: { orderStatus: "delivered" } },
+      { $match: matchQuery },
       { $group: { _id: null, total: { $sum: "$total" } } },
     ]);
     return result[0]?.total || 0;
   }
 
-  async getRevenueLast7Days() {
-    const dates = [...Array(7)].map((_, i) => {
-      const d = new Date();
-      d.setUTCHours(0,0,0,0);
-      d.setDate(d.getDate() - i);
-      return d;
-    }).reverse();
+  async getRevenueChart(startDate, endDate) {
+    const dates = [];
+    let currentDate = new Date(startDate);
+    currentDate.setHours(0,0,0,0);
+    const end = new Date(endDate);
+    end.setHours(23,59,59,999);
+
+    while (currentDate <= end) {
+      dates.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
 
     const result = await this.schema.aggregate([
       { 
         $match: { 
           orderStatus: "delivered",
-          createdAt: { $gte: dates[0] }
+          createdAt: { $gte: dates[0], $lte: end }
         } 
       },
       {
         $group: {
-          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt", timezone: "+07:00" } },
           total: { $sum: "$total" }
         }
       }
     ]);
 
     const stats = dates.map(date => {
-      const dateString = date.toISOString().split('T')[0];
+      const d = new Date(date.getTime() + 7 * 3600 * 1000);
+      const dateString = d.toISOString().split('T')[0];
       const match = result.find(r => r._id === dateString);
       return {
         date: dateString,

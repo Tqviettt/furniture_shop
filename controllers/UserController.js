@@ -11,6 +11,7 @@ class UserController extends BaseController {
     this.logout = this.logout.bind(this);
     this.profile = this.profile.bind(this);
     this.updateProfile = this.updateProfile.bind(this);
+    this.addAddress = this.addAddress.bind(this);
     // Admin quản lý user
     this.adminUsers = this.adminUsers.bind(this);
     this.createStaff = this.createStaff.bind(this);
@@ -120,6 +121,41 @@ class UserController extends BaseController {
       this.redirect(res, "/profile", "Cập nhật hồ sơ thành công!");
     } catch (error) {
       this.handleError(res, error, "/profile");
+    }
+  }
+
+  async addAddress(req, res) {
+    try {
+      const { name, phone, street, ward, district, city, isDefault } = req.body;
+      const user = await UserModel.getById(req.session.userId);
+      
+      const newAddress = { name, phone, street, ward, district, city, isDefault: isDefault === "on" || isDefault === true };
+      
+      if (!user.addresses) {
+        user.addresses = [];
+      }
+
+      // Nếu là địa chỉ đầu tiên hoặc được set làm mặc định, bỏ default các địa chỉ cũ
+      if (user.addresses.length === 0 || newAddress.isDefault) {
+        newAddress.isDefault = true;
+        user.addresses.forEach(a => a.isDefault = false);
+      }
+      
+      user.addresses.push(newAddress);
+      await user.save();
+      
+      // Return JSON nếu là request fetch
+      if (req.xhr || req.accepts('json')) {
+        return res.json({ success: true, addresses: user.addresses });
+      }
+      
+      this.redirect(res, "/checkout", "Đã lưu địa chỉ mới!");
+    } catch (error) {
+      console.error("Lỗi addAddress:", error);
+      if (req.xhr || req.accepts('json')) {
+        return res.status(500).json({ success: false, message: error.message });
+      }
+      this.handleError(res, error, "/checkout");
     }
   }
 

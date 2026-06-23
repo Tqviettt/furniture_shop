@@ -1,37 +1,65 @@
 <div class="container-fluid py-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h3 class="mb-0 text-dark serif"> Admin Dashboard - Báo Cáo Thống Kê</h3>
-    <a href="/admin/dashboard/export" class="btn btn-success"><i class="fas fa-file-excel me-2"></i> Xuất Excel Doanh Thu</a>
+    <a href="/admin/dashboard/export?startDate=<%= filter ? filter.startDate : '' %>&endDate=<%= filter ? filter.endDate : '' %>&range=<%= filter ? filter.range : '' %>" class="btn btn-success"><i class="fas fa-file-excel me-2"></i> Xuất Excel Doanh Thu</a>
   </div>
   
   <!-- Thẻ thống kê tổng quan -->
   <div class="row g-4 mb-4">
     <div class="col-md-3">
       <div class="card bg-primary text-white p-3 shadow h-100 border-0">
-        <h2 class="fw-bold"><%= stats.totalProducts %></h2>
+        <h2 class="fw-bold font-sans"><%= stats.totalProducts %></h2>
         <p class="mb-0"> Sản phẩm</p>
         <a href="/admin/products" class="text-white small text-decoration-none mt-2">Quản lý <i class="fas fa-arrow-right"></i></a>
       </div>
     </div>
     <div class="col-md-3">
       <div class="card bg-success text-white p-3 shadow h-100 border-0">
-        <h2 class="fw-bold"><%= stats.totalUsers %></h2>
+        <h2 class="fw-bold font-sans"><%= stats.totalUsers %></h2>
         <p class="mb-0"> Khách hàng</p>
         <a href="/admin/users" class="text-white small text-decoration-none mt-2">Quản lý <i class="fas fa-arrow-right"></i></a>
       </div>
     </div>
     <div class="col-md-3">
       <div class="card bg-warning text-dark p-3 shadow h-100 border-0">
-        <h2 class="fw-bold"><%= stats.totalOrders %></h2>
+        <h2 class="fw-bold font-sans"><%= stats.totalOrders %></h2>
         <p class="mb-0"> Đơn hàng</p>
         <a href="/admin/orders" class="text-dark small text-decoration-none mt-2">Quản lý <i class="fas fa-arrow-right"></i></a>
       </div>
     </div>
     <div class="col-md-3">
       <div class="card bg-danger text-white p-3 shadow h-100 border-0">
-        <h2 class="fw-bold"><%= stats.revenue.toLocaleString('vi-VN') %>đ</h2>
+        <h2 class="fw-bold font-sans"><%= stats.revenue.toLocaleString('vi-VN') %>đ</h2>
         <p class="mb-0"> Doanh thu (Đã giao)</p>
       </div>
+    </div>
+  </div>
+
+  <!-- Bộ lọc thời gian -->
+  <div class="card shadow-sm border-0 mb-4 bg-white">
+    <div class="card-body py-3">
+      <form action="/admin/dashboard" method="GET" class="row align-items-end g-3">
+        <div class="col-md-3">
+          <label class="form-label text-muted small mb-1">Mốc thời gian</label>
+          <select name="range" class="form-select" onchange="if(this.value) this.form.submit()">
+            <option value="">Tùy chỉnh khoảng ngày...</option>
+            <option value="today" <%= filter && filter.range === 'today' ? 'selected' : '' %>>Hôm nay</option>
+            <option value="7days" <%= filter && filter.range === '7days' ? 'selected' : '' %>>7 ngày gần nhất</option>
+            <option value="30days" <%= filter && filter.range === '30days' ? 'selected' : '' %>>30 ngày gần nhất</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label text-muted small mb-1">Từ ngày</label>
+          <input type="date" name="startDate" class="form-control" value="<%= filter ? filter.startDate : '' %>" onchange="document.querySelector('select[name=range]').value=''">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label text-muted small mb-1">Đến ngày</label>
+          <input type="date" name="endDate" class="form-control" value="<%= filter ? filter.endDate : '' %>" onchange="document.querySelector('select[name=range]').value=''">
+        </div>
+        <div class="col-md-3">
+          <button type="submit" class="btn btn-dark w-100"><i class="fas fa-filter me-2"></i>Lọc dữ liệu</button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -40,7 +68,17 @@
     <div class="col-md-8">
       <div class="card shadow border-0 h-100">
         <div class="card-header bg-white pt-3 pb-2">
-          <h5 class="mb-0 text-dark">Doanh thu 7 ngày gần nhất</h5>
+          <h5 class="mb-0 text-dark">
+            Biểu đồ Doanh thu
+            <span class="fs-6 text-muted ms-2 fw-normal">
+              <% if(filter && filter.range === 'today') { %>(Hôm nay)<% } %>
+              <% if(filter && filter.range === '7days') { %>(7 ngày gần nhất)<% } %>
+              <% if(filter && filter.range === '30days') { %>(30 ngày gần nhất)<% } %>
+              <% if(filter && !filter.range && filter.startDate && filter.endDate) { %>
+                (Từ <%= filter.startDate.split('-').reverse().join('/') %> đến <%= filter.endDate.split('-').reverse().join('/') %>)
+              <% } %>
+            </span>
+          </h5>
         </div>
         <div class="card-body">
           <canvas id="revenueChart" style="max-height: 300px; width: 100%;"></canvas>

@@ -40,6 +40,7 @@ router.post("/reset-password/:token", UserController.processResetPassword);
 // Customer
 router.get("/profile", auth.isAuthenticated, UserController.profile);
 router.put("/profile", auth.isAuthenticated, upload.single("avatar"), UserController.updateProfile);
+router.post("/profile/addresses", auth.isAuthenticated, UserController.addAddress);
 
 // Admin quản lý users
 router.get("/admin/users", auth.isAdmin, UserController.adminUsers);

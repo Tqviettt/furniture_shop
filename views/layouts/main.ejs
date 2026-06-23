@@ -109,35 +109,35 @@
                     </li>
                     <li><a class="dropdown-item" href="/admin/dashboard"> Dashboard</a></li>
                     <% if (isStaffCSKH) { %>
-                    <li><a class="dropdown-item" href="/chat/staff"> Tư vấn Khách hàng (Chat)</a></li>
-                    <li><a class="dropdown-item" href="/admin/reviews"> Quản lý Đánh giá</a></li>
-                    <% } %>
-                    <% if (isStaffOrder) { %>
-                    <li><a class="dropdown-item" href="/admin/orders"> Xử lý Đơn hàng</a></li>
-                    <% } %>
-                    <% if (isStaffContent) { %>
-                    <li><a class="dropdown-item" href="/admin/products"> Quản lý Sản phẩm</a></li>
-                    <li><a class="dropdown-item" href="/admin/categories"> Quản lý Danh mục</a></li>
-                    <li><a class="dropdown-item" href="/admin/inventory"> Quản lý Kho hàng</a></li>
-                    <li><a class="dropdown-item" href="/admin/news"> Viết Tin tức</a></li>
-                    <% } %>
-                    <li>
-                      <hr class="dropdown-divider" />
-                    </li>
-
-                    <% } else { %>
-                      <li><a class="dropdown-item" href="/profile"> Hồ sơ</a></li>
-                      <li><a class="dropdown-item" href="/orders/my-orders"> Đơn hàng</a></li>
-                      <li>
-                        <hr class="dropdown-divider" />
-                      </li>
+                      <li><a class="dropdown-item" href="/chat/staff"> Tư vấn Khách hàng (Chat)</a></li>
+                      <li><a class="dropdown-item" href="/admin/reviews"> Quản lý Đánh giá</a></li>
                       <% } %>
+                        <% if (isStaffOrder) { %>
+                          <li><a class="dropdown-item" href="/admin/orders"> Xử lý Đơn hàng</a></li>
+                          <% } %>
+                            <% if (isStaffContent) { %>
+                              <li><a class="dropdown-item" href="/admin/products"> Quản lý Sản phẩm</a></li>
+                              <li><a class="dropdown-item" href="/admin/categories"> Quản lý Danh mục</a></li>
+                              <li><a class="dropdown-item" href="/admin/inventory"> Quản lý Kho hàng</a></li>
+                              <li><a class="dropdown-item" href="/admin/news"> Viết Tin tức</a></li>
+                              <% } %>
+                                <li>
+                                  <hr class="dropdown-divider" />
+                                </li>
 
-                        <li>
-                          <form action="/logout" method="POST">
-                            <button class="dropdown-item text-danger" type="submit"> Đăng xuất</button>
-                          </form>
-                        </li>
+                                <% } else { %>
+                                  <li><a class="dropdown-item" href="/profile"> Hồ sơ</a></li>
+                                  <li><a class="dropdown-item" href="/orders/my-orders"> Đơn hàng</a></li>
+                                  <li>
+                                    <hr class="dropdown-divider" />
+                                  </li>
+                                  <% } %>
+
+                                    <li>
+                                      <form action="/logout" method="POST">
+                                        <button class="dropdown-item text-danger" type="submit"> Đăng xuất</button>
+                                      </form>
+                                    </li>
               </ul>
             </li>
 

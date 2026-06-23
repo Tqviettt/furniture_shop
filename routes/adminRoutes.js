@@ -21,16 +21,48 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Dashboard
+router.get("/dashboard/export", auth.isStaffOrAdmin, ReportController.exportRevenue);
 router.get("/dashboard", auth.isStaffOrAdmin, async (req, res) => {
   const UserModel = require("../models/User");
   const OrderModel = require("../models/Order");
+
+  let { startDate, endDate, range } = req.query;
+  const today = new Date();
+  
+  if (range) {
+    if (range === 'today') {
+      startDate = today.toISOString().split('T')[0];
+      endDate = startDate;
+    } else if (range === '7days') {
+      const past = new Date(today);
+      past.setDate(today.getDate() - 6);
+      startDate = past.toISOString().split('T')[0];
+      endDate = today.toISOString().split('T')[0];
+    } else if (range === '30days') {
+      const past = new Date(today);
+      past.setDate(today.getDate() - 29);
+      startDate = past.toISOString().split('T')[0];
+      endDate = today.toISOString().split('T')[0];
+    }
+  } else if (!startDate || !endDate) {
+    const past = new Date(today);
+    past.setDate(today.getDate() - 6);
+    startDate = past.toISOString().split('T')[0];
+    endDate = today.toISOString().split('T')[0];
+    range = '7days';
+  }
+
+  const start = new Date(startDate);
+  start.setHours(0,0,0,0);
+  const end = new Date(endDate);
+  end.setHours(23,59,59,999);
 
   const [totalProducts, totalUsers, totalOrders, revenue, revenueChart, statusStats, topProducts, recentOrders, lowStockProducts] = await Promise.all([
     ProductModel.schema.countDocuments(),
     UserModel.schema.countDocuments(),
     OrderModel.schema.countDocuments(),
-    OrderModel.getRevenue(),
-    OrderModel.getRevenueLast7Days(),
+    OrderModel.getRevenue(start, end),
+    OrderModel.getRevenueChart(start, end),
     OrderModel.getOrderStatusStats(),
     OrderModel.getTopSellingProducts(5),
     OrderModel.getRecentOrders(5),
@@ -44,7 +76,8 @@ router.get("/dashboard", auth.isStaffOrAdmin, async (req, res) => {
     statusStats,
     topProducts,
     recentOrders,
-    lowStockProducts
+    lowStockProducts,
+    filter: { startDate, endDate, range }
   });
 });
 

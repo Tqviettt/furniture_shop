@@ -4,8 +4,44 @@ const OrderModel = require("../models/Order");
 class ReportController {
   async exportRevenue(req, res) {
     try {
+      let { startDate, endDate, range } = req.query;
+      const today = new Date();
+      
+      if (range) {
+        if (range === 'today') {
+          startDate = today.toISOString().split('T')[0];
+          endDate = startDate;
+        } else if (range === '7days') {
+          const past = new Date(today);
+          past.setDate(today.getDate() - 6);
+          startDate = past.toISOString().split('T')[0];
+          endDate = today.toISOString().split('T')[0];
+        } else if (range === '30days') {
+          const past = new Date(today);
+          past.setDate(today.getDate() - 29);
+          startDate = past.toISOString().split('T')[0];
+          endDate = today.toISOString().split('T')[0];
+        }
+      } else if (!startDate || !endDate) {
+        const past = new Date(today);
+        past.setDate(today.getDate() - 6);
+        startDate = past.toISOString().split('T')[0];
+        endDate = today.toISOString().split('T')[0];
+        range = '7days';
+      }
+
+      const start = new Date(startDate);
+      start.setHours(0,0,0,0);
+      const end = new Date(endDate);
+      end.setHours(23,59,59,999);
+
+      const filter = { 
+        orderStatus: "delivered",
+        createdAt: { $gte: start, $lte: end }
+      };
+
       const orders = await OrderModel.getAll(
-        { orderStatus: "delivered" },
+        filter,
         { sort: { createdAt: 1 } }
       );
 

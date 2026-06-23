@@ -19,7 +19,7 @@ class OrderController extends BaseController {
   }
 
   // GET /checkout
-  checkout(req, res) {
+  async checkout(req, res) {
     const cart = req.session.cart || [];
     if (cart.length === 0) {
       req.flash("error", "Giỏ hàng trống!");
@@ -30,11 +30,14 @@ class OrderController extends BaseController {
       return sum + price * item.quantity;
     }, 0);
 
+    const user = await UserModel.getById(req.session.userId);
+
     this.render(res, "orders/checkout", {
       title: "Thanh toán",
       cart,
       total,
       shippingFee: total > 5000000 ? 0 : 50000,
+      currentUser: user,
     });
   }
 
@@ -47,7 +50,7 @@ class OrderController extends BaseController {
         return res.redirect("/cart");
       }
 
-      const { name, phone, street, city, district, paymentMethod, note } =
+      const { name, phone, street, city, district, ward, addressId, paymentMethod, note } =
         req.body;
 
       const subtotal = cart.reduce((sum, item) => {
@@ -67,16 +70,35 @@ class OrderController extends BaseController {
         }
       }
 
+      const orderItems = cart.map((item) => ({
+        product: item.productId,
+        name: item.name,
+        price: item.salePrice > 0 ? item.salePrice : item.price,
+        quantity: item.quantity,
+        image: item.image,
+      }));
+      
+      let finalAddress = { name, phone, street, city, district };
+      if (addressId) {
+        const user = await UserModel.getById(req.session.userId);
+        const selectedAddr = user.addresses.id(addressId);
+        if (selectedAddr) {
+          finalAddress = {
+            name: selectedAddr.name,
+            phone: selectedAddr.phone,
+            street: selectedAddr.ward ? `${selectedAddr.street}, ${selectedAddr.ward}` : selectedAddr.street,
+            city: selectedAddr.city,
+            district: selectedAddr.district
+          };
+        }
+      } else if (ward) {
+        finalAddress.street = `${street}, ${ward}`;
+      }
+
       const order = await OrderModel.create({
         user: req.session.userId,
-        items: cart.map((item) => ({
-          product: item.productId,
-          name: item.name,
-          price: item.salePrice > 0 ? item.salePrice : item.price,
-          quantity: item.quantity,
-          image: item.image,
-        })),
-        shippingAddress: { name, phone, street, city, district },
+        items: orderItems,
+        shippingAddress: finalAddress,
         paymentMethod,
         note,
         subtotal,

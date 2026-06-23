@@ -14,11 +14,17 @@ const userSchema = new mongoose.Schema(
     googleId: { type: String, sparse: true },
     facebookId: { type: String, sparse: true },
     phone: { type: String, default: "" },
-    address: {
-      street: String,
-      city: String,
-      district: String,
-    },
+    addresses: [
+      {
+        name: String,
+        phone: String,
+        street: String,
+        ward: String,
+        district: String,
+        city: String,
+        isDefault: { type: Boolean, default: false }
+      }
+    ],
     role: { 
       type: String, 
       enum: ["customer", "staff_cskh", "staff_order", "staff_content", "admin"], 
